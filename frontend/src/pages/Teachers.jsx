@@ -32,7 +32,7 @@ const Teachers = () => {
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#87CEEB] via-[#28A745] to-[#87CEEB] text-white">
+      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <motion.div
           className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
@@ -73,7 +73,7 @@ const Teachers = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[#87CEEB] to-[#28A745] flex items-center justify-center text-6xl">
+                      <div className="w-full h-full bg-gradient-to-br from-[#7dd3fc] to-[#c084fc] flex items-center justify-center text-6xl">
                         👤
                       </div>
                     )}

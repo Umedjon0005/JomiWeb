@@ -27,10 +27,10 @@ const Login = ({ setIsAuthenticated }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#87CEEB] via-[#28A745] to-[#87CEEB] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] p-4">
       <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#87CEEB] to-[#28A745] bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
             Admin Panel
           </h1>
           <p className="text-gray-600">Sign in to manage the website</p>
@@ -68,7 +68,7 @@ const Login = ({ setIsAuthenticated }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-6 py-3 bg-gradient-to-r from-[#87CEEB] to-[#28A745] text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-6 py-3 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

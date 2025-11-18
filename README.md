@@ -5,6 +5,7 @@ A complete, production-ready school website with a comprehensive admin panel, bu
 ## 🚀 Features
 
 ### Public Website
+
 - **Stunning Home Page** with animations, hero section, news carousel, featured events, stats, and teacher showcase
 - **About Us Page** with mission, vision, and values
 - **Events Page** with filtering (all/upcoming/past)
@@ -13,6 +14,7 @@ A complete, production-ready school website with a comprehensive admin panel, bu
 - Fully responsive, mobile-first design
 
 ### Admin Panel
+
 - JWT-based authentication
 - Dashboard with statistics
 - Full CRUD operations for:
@@ -42,6 +44,7 @@ A complete, production-ready school website with a comprehensive admin panel, bu
 1. **Clone the repository** (if applicable) or navigate to the project directory
 
 2. **Start all services with Docker Compose:**
+
    ```bash
    docker-compose up -d
    ```
@@ -49,6 +52,7 @@ A complete, production-ready school website with a comprehensive admin panel, bu
 3. **Wait for services to start** (this may take a few minutes on first run)
 
 4. **Access the applications:**
+
    - **Frontend Website**: http://localhost:3000
    - **Admin Panel**: http://localhost:3001
    - **Backend API**: http://localhost:5000
@@ -62,16 +66,19 @@ A complete, production-ready school website with a comprehensive admin panel, bu
 ### Backend Setup
 
 1. Navigate to backend directory:
+
    ```bash
    cd backend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Create a `.env` file:
+
    ```env
    PORT=5000
    DB_HOST=localhost
@@ -86,11 +93,13 @@ A complete, production-ready school website with a comprehensive admin panel, bu
    ```
 
 4. Make sure PostgreSQL is running and create the database:
+
    ```bash
    createdb school_db
    ```
 
 5. Run database migrations:
+
    ```bash
    npm run migrate
    ```
@@ -103,16 +112,19 @@ A complete, production-ready school website with a comprehensive admin panel, bu
 ### Frontend Setup
 
 1. Navigate to frontend directory:
+
    ```bash
    cd frontend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -122,16 +134,19 @@ A complete, production-ready school website with a comprehensive admin panel, bu
 ### Admin Panel Setup
 
 1. Navigate to admin directory:
+
    ```bash
    cd admin
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -174,6 +189,7 @@ JomiWeb/
 ## 🔐 API Endpoints
 
 ### Public Endpoints
+
 - `GET /api/news` - Get all news articles
 - `GET /api/events` - Get all events
 - `GET /api/teachers` - Get all teachers
@@ -182,6 +198,7 @@ JomiWeb/
 - `POST /api/contact` - Submit contact form
 
 ### Protected Endpoints (Require JWT)
+
 - `POST /api/auth/login` - Admin login
 - `GET /api/dashboard` - Get dashboard statistics
 - `POST /api/news` - Create news article
@@ -198,13 +215,14 @@ JomiWeb/
 
 ## 🎨 Design
 
-- **Primary Colors**: Sky Blue (#87CEEB) and Green (#28A745)
+- **Primary Colors**: Sky Blue (#7DD3FC) and Soft Violet (#C084FC)
 - **Typography**: Poppins (body) and Playfair Display (headings)
 - **Design Style**: Modern, clean, with smooth animations and gradients
 
 ## 🔧 Environment Variables
 
 ### Backend (.env)
+
 ```env
 PORT=5000
 DB_HOST=postgres
@@ -221,6 +239,7 @@ UPLOAD_PATH=./uploads
 ## 📝 Database Schema
 
 The application uses the following main tables:
+
 - `users` - Admin users
 - `news` - News articles
 - `events` - School events
@@ -271,4 +290,3 @@ For issues or questions, please check the codebase or create an issue in the rep
 ---
 
 **Built with ❤️ for educational institutions**
-

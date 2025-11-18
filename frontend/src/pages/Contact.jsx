@@ -39,7 +39,7 @@ const Contact = () => {
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#87CEEB] via-[#28A745] to-[#87CEEB] text-white">
+      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <motion.div
           className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
@@ -78,7 +78,7 @@ const Contact = () => {
                   { icon: '🕒', title: 'Office Hours', content: 'Monday - Friday: 8:00 AM - 5:00 PM' }
                 ].map((item, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#87CEEB] to-[#28A745] flex items-center justify-center text-2xl flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] flex items-center justify-center text-2xl flex-shrink-0">
                       {item.icon}
                     </div>
                     <div>
@@ -100,7 +100,7 @@ const Contact = () => {
               transition={{ duration: 0.6 }}
             >
               {submitted && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-[#87CEEB] to-[#28A745] text-white rounded-xl text-center font-semibold">
+                <div className="mb-6 p-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white rounded-xl text-center font-semibold">
                   ✓ Thank you! Your message has been sent successfully.
                 </div>
               )}
@@ -157,7 +157,7 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full px-8 py-4 bg-gradient-to-r from-[#87CEEB] to-[#28A745] text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-8 py-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? 'Sending...' : 'Send Message'}
                 </button>

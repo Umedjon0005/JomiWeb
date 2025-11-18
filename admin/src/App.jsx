@@ -1,27 +1,34 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
-import NewsManagement from './pages/NewsManagement'
-import EventsManagement from './pages/EventsManagement'
-import TeachersManagement from './pages/TeachersManagement'
-import AboutManagement from './pages/AboutManagement'
-import StatsManagement from './pages/StatsManagement'
-import Layout from './components/Layout'
-import { getToken } from './utils/auth'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { useState, useEffect } from "react";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import NewsManagement from "./pages/NewsManagement";
+import EventsManagement from "./pages/EventsManagement";
+import OlympiadsManagement from "./pages/OlympiadsManagement";
+import MomentsManagement from "./pages/MomentsManagement";
+import TeachersManagement from "./pages/TeachersManagement";
+import AboutManagement from "./pages/AboutManagement";
+import StatsManagement from "./pages/StatsManagement";
+import Layout from "./components/Layout";
+import { getToken } from "./utils/auth";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = getToken()
-    setIsAuthenticated(!!token)
-    setLoading(false)
-  }, [])
+    const token = getToken();
+    setIsAuthenticated(!!token);
+    setLoading(false);
+  }, []);
 
   if (loading) {
-    return <div className="loading">Loading...</div>
+    return <div className="loading">Loading...</div>;
   }
 
   return (
@@ -51,14 +58,15 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="news" element={<NewsManagement />} />
           <Route path="events" element={<EventsManagement />} />
+          <Route path="olympiads" element={<OlympiadsManagement />} />
+          <Route path="moments" element={<MomentsManagement />} />
           <Route path="teachers" element={<TeachersManagement />} />
           <Route path="about" element={<AboutManagement />} />
           <Route path="stats" element={<StatsManagement />} />
         </Route>
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
-
+export default App;

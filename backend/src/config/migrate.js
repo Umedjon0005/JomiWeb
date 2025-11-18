@@ -1,5 +1,5 @@
-const pool = require('./database');
-const bcrypt = require('bcryptjs');
+const pool = require("./database");
+const bcrypt = require("bcryptjs");
 
 const createTables = async () => {
   try {
@@ -35,6 +35,37 @@ const createTables = async () => {
         event_date DATE NOT NULL,
         location VARCHAR(255),
         image_url VARCHAR(500),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Olympiads table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS olympiads (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT NOT NULL,
+        olympiad_date DATE NOT NULL,
+        location VARCHAR(255),
+        image_url VARCHAR(500),
+        reference_url VARCHAR(500),
+        winner_name VARCHAR(255),
+        project_name VARCHAR(255),
+        project_image_url VARCHAR(500),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Campus moments gallery
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS moments (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        caption TEXT,
+        image_url VARCHAR(500),
+        sort_order INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -77,12 +108,15 @@ const createTables = async () => {
     `);
 
     // Insert default admin user (password: admin123)
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-    await pool.query(`
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+    await pool.query(
+      `
       INSERT INTO users (username, password)
       VALUES ('admin', $1)
       ON CONFLICT (username) DO NOTHING
-    `, [hashedPassword]);
+    `,
+      [hashedPassword]
+    );
 
     // Insert default stats
     await pool.query(`
@@ -105,13 +139,12 @@ const createTables = async () => {
       ON CONFLICT (section_key) DO NOTHING
     `);
 
-    console.log('Database tables created successfully');
+    console.log("Database tables created successfully");
     process.exit(0);
   } catch (error) {
-    console.error('Error creating tables:', error);
+    console.error("Error creating tables:", error);
     process.exit(1);
   }
 };
 
 createTables();
-

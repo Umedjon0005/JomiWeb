@@ -1,12 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import Home from './pages/Home'
-import About from './pages/About'
-import Events from './pages/Events'
-import Teachers from './pages/Teachers'
-import Contact from './pages/Contact'
-import OlympiadDetails from './pages/OlympiadDetails'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Events from "./pages/Events";
+import Olympiads from "./pages/Olympiads";
+import Teachers from "./pages/Teachers";
+import Contact from "./pages/Contact";
+import OlympiadDetails from "./pages/OlympiadDetails";
 
 function App() {
   return (
@@ -18,15 +19,16 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/olympiads" element={<Olympiads />} />
             <Route path="/teachers" element={<Teachers />} />
-          <Route path="/olympiads/:id" element={<OlympiadDetails />} />
+            <Route path="/olympiads/:id" element={<OlympiadDetails />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
         <Footer />
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

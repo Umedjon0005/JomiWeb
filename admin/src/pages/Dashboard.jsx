@@ -38,7 +38,7 @@ const Dashboard = () => {
             <div className="text-4xl">📰</div>
             <div>
               <h3 className="text-sm text-gray-600 mb-1">News Articles</h3>
-              <p className="text-3xl font-bold bg-gradient-to-r from-[#87CEEB] to-[#28A745] bg-clip-text text-transparent">
+              <p className="text-3xl font-bold bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
                 {stats?.news || 0}
               </p>
             </div>
@@ -50,7 +50,7 @@ const Dashboard = () => {
             <div className="text-4xl">📅</div>
             <div>
               <h3 className="text-sm text-gray-600 mb-1">Events</h3>
-              <p className="text-3xl font-bold bg-gradient-to-r from-[#87CEEB] to-[#28A745] bg-clip-text text-transparent">
+              <p className="text-3xl font-bold bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
                 {stats?.events || 0}
               </p>
             </div>
@@ -62,7 +62,7 @@ const Dashboard = () => {
             <div className="text-4xl">👨‍🏫</div>
             <div>
               <h3 className="text-sm text-gray-600 mb-1">Teachers</h3>
-              <p className="text-3xl font-bold bg-gradient-to-r from-[#87CEEB] to-[#28A745] bg-clip-text text-transparent">
+              <p className="text-3xl font-bold bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
                 {stats?.teachers || 0}
               </p>
             </div>

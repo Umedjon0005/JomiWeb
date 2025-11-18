@@ -65,7 +65,7 @@ const EventsManagement = () => {
         <h1 className="text-4xl font-bold text-gray-900">Events Management</h1>
         <button
           onClick={handleCreate}
-          className="px-6 py-3 bg-gradient-to-r from-[#87CEEB] to-[#28A745] text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
+          className="px-6 py-3 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
         >
           + Add Event
         </button>

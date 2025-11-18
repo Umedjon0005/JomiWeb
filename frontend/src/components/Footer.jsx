@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
-            <h3 className="font-display text-2xl font-bold mb-4 bg-gradient-to-r from-[#87CEEB] to-[#28A745] bg-clip-text text-transparent">
+            <h3 className="font-display text-2xl font-bold mb-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
               EduSchool
             </h3>
             <p className="text-gray-400 leading-relaxed">

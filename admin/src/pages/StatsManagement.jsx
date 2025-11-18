@@ -102,7 +102,7 @@ const StatsManagement = () => {
                     <button
                       onClick={() => handleUpdate(stat)}
                       disabled={saving[stat.id]}
-                      className="px-4 py-2 bg-gradient-to-r from-[#87CEEB] to-[#28A745] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+                      className="px-4 py-2 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50"
                     >
                       {saving[stat.id] ? 'Saving...' : 'Update'}
                     </button>

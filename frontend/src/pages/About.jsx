@@ -43,7 +43,7 @@ const About = () => {
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#87CEEB] via-[#28A745] to-[#87CEEB] text-white">
+      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <motion.div
           className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
@@ -84,7 +84,7 @@ const About = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-[#28A745]">
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-[#7dd3fc]">
                 {vision.title}
               </h2>
               <p className="text-gray-700 text-lg leading-relaxed">{vision.content}</p>
@@ -99,7 +99,7 @@ const About = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-[#87CEEB] to-[#28A745] bg-clip-text text-transparent">
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
                 {history.title}
               </h2>
               <p className="text-gray-700 text-lg leading-relaxed">{history.content}</p>
@@ -112,7 +112,7 @@ const About = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#87CEEB] to-[#28A745] bg-clip-text text-transparent">
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
               Our Core Values
             </h2>
           </div>

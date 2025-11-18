@@ -54,7 +54,7 @@ const Events = () => {
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#87CEEB] via-[#28A745] to-[#87CEEB] text-white">
+      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <motion.div
           className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
@@ -79,7 +79,7 @@ const Events = () => {
                 onClick={() => setFilter(f)}
                 className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 capitalize ${
                   filter === f
-                    ? 'bg-gradient-to-r from-[#87CEEB] to-[#28A745] text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white shadow-lg'
                     : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
                 }`}
               >
