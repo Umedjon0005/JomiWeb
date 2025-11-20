@@ -1,9 +1,14 @@
 const pool = require('../config/database');
+const { getLanguageFromRequest, applyTranslations } = require('../utils/language');
+
+const translationFields = ['title', 'content'];
 
 const getAllNews = async (req, res) => {
   try {
+    const lang = getLanguageFromRequest(req);
     const result = await pool.query('SELECT * FROM news ORDER BY publish_date DESC');
-    res.json(result.rows);
+    const rows = result.rows.map(row => applyTranslations(row, lang, translationFields));
+    res.json(rows);
   } catch (error) {
     console.error('Error fetching news:', error);
     res.status(500).json({ message: 'Server error' });
@@ -12,6 +17,7 @@ const getAllNews = async (req, res) => {
 
 const getNewsById = async (req, res) => {
   try {
+    const lang = getLanguageFromRequest(req);
     const { id } = req.params;
     const result = await pool.query('SELECT * FROM news WHERE id = $1', [id]);
     
@@ -19,7 +25,7 @@ const getNewsById = async (req, res) => {
       return res.status(404).json({ message: 'News not found' });
     }
     
-    res.json(result.rows[0]);
+    res.json(applyTranslations(result.rows[0], lang, translationFields));
   } catch (error) {
     console.error('Error fetching news:', error);
     res.status(500).json({ message: 'Server error' });
@@ -28,12 +34,22 @@ const getNewsById = async (req, res) => {
 
 const createNews = async (req, res) => {
   try {
-    const { title, content, publish_date } = req.body;
+    const { title, content, publish_date, title_ru, title_tj, content_ru, content_tj } = req.body;
     const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
     const result = await pool.query(
-      'INSERT INTO news (title, content, image_url, publish_date) VALUES ($1, $2, $3, $4) RETURNING *',
-      [title, content, image_url, publish_date]
+      `INSERT INTO news (title, content, title_ru, title_tj, content_ru, content_tj, image_url, publish_date) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [
+        title,
+        content,
+        title_ru || null,
+        title_tj || null,
+        content_ru || null,
+        content_tj || null,
+        image_url,
+        publish_date
+      ]
     );
 
     res.status(201).json(result.rows[0]);
@@ -46,7 +62,7 @@ const createNews = async (req, res) => {
 const updateNews = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content, publish_date } = req.body;
+    const { title, content, publish_date, title_ru, title_tj, content_ru, content_tj } = req.body;
     
     let image_url = null;
     if (req.file) {
@@ -55,11 +71,49 @@ const updateNews = async (req, res) => {
 
     let query, params;
     if (image_url) {
-      query = 'UPDATE news SET title = $1, content = $2, image_url = $3, publish_date = $4, updated_at = CURRENT_TIMESTAMP WHERE id = $5 RETURNING *';
-      params = [title, content, image_url, publish_date, id];
+      query = `UPDATE news SET 
+        title = $1, 
+        content = $2, 
+        title_ru = $3, 
+        title_tj = $4, 
+        content_ru = $5, 
+        content_tj = $6, 
+        image_url = $7, 
+        publish_date = $8, 
+        updated_at = CURRENT_TIMESTAMP 
+        WHERE id = $9 RETURNING *`;
+      params = [
+        title,
+        content,
+        title_ru || null,
+        title_tj || null,
+        content_ru || null,
+        content_tj || null,
+        image_url,
+        publish_date,
+        id
+      ];
     } else {
-      query = 'UPDATE news SET title = $1, content = $2, publish_date = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING *';
-      params = [title, content, publish_date, id];
+      query = `UPDATE news SET 
+        title = $1, 
+        content = $2, 
+        title_ru = $3, 
+        title_tj = $4, 
+        content_ru = $5, 
+        content_tj = $6, 
+        publish_date = $7, 
+        updated_at = CURRENT_TIMESTAMP 
+        WHERE id = $8 RETURNING *`;
+      params = [
+        title,
+        content,
+        title_ru || null,
+        title_tj || null,
+        content_ru || null,
+        content_tj || null,
+        publish_date,
+        id
+      ];
     }
 
     const result = await pool.query(query, params);

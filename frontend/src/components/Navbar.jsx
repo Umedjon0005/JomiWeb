@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import logo from "../logo.png";
+import { useLanguage, SUPPORTED_LANGS } from "../context/LanguageContext";
+import { useTranslation } from "../hooks/useTranslation";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,12 +21,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { path: "/", label: "Home" },
-    { path: "/about", label: "About" },
-    { path: "/events", label: "Events" },
-    { path: "/teachers", label: "Teachers" },
-    { path: "/olympiads", label: "Olympiads" },
-    { path: "/contact", label: "Contact" },
+    { path: "/", label: t("nav.home", "Home") },
+    { path: "/about", label: t("nav.about", "About") },
+    { path: "/events", label: t("nav.events", "Events") },
+    { path: "/teachers", label: t("nav.teachers", "Teachers") },
+    { path: "/olympiads", label: t("nav.olympiads", "Olympiads") },
+    { path: "/contact", label: t("nav.contact", "Contact") },
   ];
 
   return (
@@ -37,45 +42,56 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="text-3xl group-hover:scale-110 transition-transform duration-300">
-              🎓
-            </div>
-            <span className="font-display text-2xl font-bold bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
-              EduSchool
+          <Link to="/" className="flex items-center space-x-3 group">
+            <img 
+              src={logo} 
+              alt="School Logo" 
+              className="h-10 w-10 object-contain group-hover:scale-110 transition-transform duration-300"
+            />
+            <span className="font-display text-2xl font-bold bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent">
+              Abdurahmoni Jomi
             </span>
           </Link>
 
-          <ul className={`hidden md:flex items-center space-x-1`}>
+          <div className="hidden md:flex items-center space-x-4">
+            <ul className="flex items-center space-x-1">
             {navLinks.map((link) => (
               <li key={link.path}>
                 <Link
                   to={link.path}
                   className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
                     location.pathname === link.path
-                      ? "text-[#87CEEB]"
-                      : "text-gray-700 hover:text-[#87CEEB]"
+                      ? "text-[#1e3a8a]"
+                      : "text-gray-700 hover:text-[#1e3a8a]"
                   }`}
                 >
                   {link.label}
                   {location.pathname === link.path && (
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc]"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af]"
                       layoutId="underline"
                     />
                   )}
                 </Link>
               </li>
             ))}
-            <li className="ml-4">
-              <Link
-                to="/admin"
-                className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] rounded-full hover:shadow-lg hover:scale-105 transition-all duration-200"
-              >
-                Admin
-              </Link>
-            </li>
-          </ul>
+            </ul>
+            <div className="flex items-center gap-1 bg-gray-100 rounded-full px-1 py-1">
+              {SUPPORTED_LANGS.map((lang) => (
+                <button
+                  key={lang.key}
+                  onClick={() => setLanguage(lang.key)}
+                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors ${
+                    language === lang.key
+                      ? "bg-white text-[#1e3a8a] shadow"
+                      : "text-gray-500 hover:text-[#1e3a8a]"
+                  }`}
+                >
+                  {lang.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <button
             className="md:hidden flex flex-col space-y-1.5 p-2"
@@ -119,13 +135,24 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/admin"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-4 py-2 mt-2 text-sm font-semibold text-white bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] rounded-lg text-center"
-            >
-              Admin
-            </Link>
+            <div className="flex items-center gap-2 px-4 pt-2">
+              {SUPPORTED_LANGS.map((lang) => (
+                <button
+                  key={lang.key}
+                  onClick={() => {
+                    setLanguage(lang.key);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`flex-1 px-3 py-2 text-xs font-semibold rounded-md border ${
+                    language === lang.key
+                      ? "bg-[#1e3a8a] text-white border-transparent"
+                      : "text-gray-700 border-gray-200"
+                  }`}
+                >
+                  {lang.name}
+                </button>
+              ))}
+            </div>
           </motion.div>
         )}
       </div>

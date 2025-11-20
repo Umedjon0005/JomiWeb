@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { getAboutContent } from '../services/api'
+import { useLanguage } from '../context/LanguageContext'
+import { useTranslation } from '../hooks/useTranslation'
 
 const About = () => {
   const [aboutContent, setAboutContent] = useState([])
   const [loading, setLoading] = useState(true)
+  const { language } = useLanguage()
+  const { t } = useTranslation()
 
   useEffect(() => {
     fetchAboutContent()
-  }, [])
+  }, [language])
 
   const fetchAboutContent = async () => {
     try {
-      const response = await getAboutContent()
+      const response = await getAboutContent(language)
       setAboutContent(response.data)
     } catch (error) {
       console.error('Error fetching about content:', error)
@@ -40,20 +44,36 @@ const About = () => {
     { icon: '❤️', title: 'Compassion', desc: 'Caring for each individual in our community' }
   ]
 
+  const heroVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
+
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section className="relative min-h-[70vh] py-24 text-white overflow-hidden">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={heroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#030711]/90 via-[#051833]/70 to-[#03121d]/90" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(135,206,235,0.35),_transparent)]" />
         <motion.div
-          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">About Us</h1>
+          <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
+            {t("about.heroTitle", "About Us")}
+          </h1>
           <p className="text-xl md:text-2xl text-white/90">
-            Discover our story, mission, and commitment to excellence
+            {t(
+              "about.heroSubtitle",
+              "Discover our story, mission, and commitment to excellence"
+            )}
           </p>
         </motion.div>
       </section>
@@ -72,7 +92,7 @@ const About = () => {
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-[#87CEEB]">
                 {mission.title}
               </h2>
-              <p className="text-gray-700 text-lg leading-relaxed">{mission.content}</p>
+              <div className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: mission.content }} />
             </motion.div>
           )}
 
@@ -87,7 +107,7 @@ const About = () => {
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-[#7dd3fc]">
                 {vision.title}
               </h2>
-              <p className="text-gray-700 text-lg leading-relaxed">{vision.content}</p>
+              <div className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: vision.content }} />
             </motion.div>
           )}
 
@@ -102,7 +122,7 @@ const About = () => {
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
                 {history.title}
               </h2>
-              <p className="text-gray-700 text-lg leading-relaxed">{history.content}</p>
+              <div className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: history.content }} />
             </motion.div>
           )}
         </div>

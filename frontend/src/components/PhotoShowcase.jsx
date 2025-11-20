@@ -1,6 +1,9 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { getPhotos, buildMediaUrl } from "../services/api";
+import { useLanguage } from "../context/LanguageContext";
 
-const photoSets = [
+const fallbackPhotos = [
   {
     id: "lab",
     title: "Immersive Labs",
@@ -32,6 +35,27 @@ const photoSets = [
 ];
 
 const PhotoShowcase = () => {
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
+
+  useEffect(() => {
+    fetchPhotos();
+  }, [language]);
+
+  const fetchPhotos = async () => {
+    try {
+      const response = await getPhotos(language);
+      setPhotos(response.data || []);
+    } catch (error) {
+      console.error("Error fetching photos:", error);
+      setPhotos([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const displayPhotos = photos.length > 0 ? photos : fallbackPhotos;
   return (
     <section className="py-24 bg-gradient-to-br from-[#0b182f] via-[#0f274a] to-[#04101f] text-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,34 +80,47 @@ const PhotoShowcase = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {photoSets.map((set, index) => (
-            <motion.div
-              key={set.id}
-              className="group relative overflow-hidden rounded-3xl shadow-2xl border border-white/10"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-            >
-              <img
-                src={set.image}
-                alt={set.title}
-                className="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6">
-                <p className="uppercase text-xs tracking-[0.4em] text-white/60 mb-2">
-                  {index + 1 < 10 ? `0${index + 1}` : index + 1}
-                </p>
-                <h3 className="font-display text-2xl font-semibold">
-                  {set.title}
-                </h3>
-                <p className="text-white/70 text-sm mt-2">{set.description}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {displayPhotos.map((photo, index) => {
+              const imageUrl = photo.image_url ? buildMediaUrl(photo.image_url) : photo.image;
+              return (
+                <motion.div
+                  key={photo.id}
+                  className="group relative overflow-hidden rounded-3xl shadow-2xl border border-white/10 hover:border-white/30 transition-all duration-300"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.6 }}
+                >
+                  <img
+                    src={imageUrl}
+                    alt={photo.title}
+                    className="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-6">
+                    <p className="uppercase text-xs tracking-[0.4em] text-white/60 mb-2">
+                      {index + 1 < 10 ? `0${index + 1}` : index + 1}
+                    </p>
+                    <h3 className="font-display text-2xl font-semibold mb-2">
+                      {photo.title}
+                    </h3>
+                    {photo.description && (
+                      <p className="text-white/80 text-sm leading-relaxed">
+                        {photo.description}
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

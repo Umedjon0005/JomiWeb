@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -8,10 +8,67 @@ import {
   getStats,
   getOlympiads,
   getMoments,
-  MEDIA_BASE_URL,
+  buildMediaUrl,
 } from "../services/api";
 import PhotoShowcase from "../components/PhotoShowcase";
 import MomentsGallery from "../components/MomentsGallery";
+import { useLanguage } from "../context/LanguageContext";
+import { useTranslation } from "../hooks/useTranslation";
+
+const defaultHeroStats = [
+  {
+    label: "Global Delegations",
+    value: "18+",
+    detail: "Olympiad teams / yr",
+  },
+  { label: "Boarding Studios", value: "12", detail: "creative + STEM labs" },
+  { label: "Scholar Projects", value: "140", detail: "mentored annually" },
+];
+
+const defaultJourneyTimeline = [
+  {
+    title: "Ignite Phase",
+    time: "September",
+    detail:
+      "Hackathons, studio residencies, and design sprints kick off the academic year.",
+  },
+  {
+    title: "Explore Phase",
+    time: "January",
+    detail:
+      "Delegations travel to Berlin, Warsaw, Dubai, and beyond for Olympiads and exchanges.",
+  },
+  {
+    title: "Impact Phase",
+    time: "May",
+    detail:
+      "Finale showcases combine research, installations, and community changemaker labs.",
+  },
+];
+
+const defaultBoardingHighlights = [
+  {
+    title: "Modern Dormitory",
+    description:
+      "Panoramic study lounges, wellness pods, and calming biophilic interiors for boarders.",
+    icon: "🏛️",
+    accent: "from-[#1e3a8a]/30 via-white to-transparent",
+  },
+  {
+    title: "Clubs & Activities",
+    description:
+      "70+ student-led clubs, midnight astronomy, culinary labs, creative media studio.",
+    icon: "🎨",
+    accent: "from-[#1e3a8a]/30 via-white to-transparent",
+  },
+  {
+    title: "Weekend Adventures",
+    description:
+      "Eco-hikes, cultural immersions, and leadership retreats around the region.",
+    icon: "🧭",
+    accent: "from-[#a5b4fc]/30 via-white to-transparent",
+  },
+];
 
 const Home = () => {
   const [news, setNews] = useState([]);
@@ -22,19 +79,112 @@ const Home = () => {
   const [moments, setMoments] = useState([]);
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const teachersScrollRef = useRef(null);
+  const teachersScrollCleanupRef = useRef(null);
+  const teachersScrollTimeoutRef = useRef(null);
+  const { language } = useLanguage();
+  const { t } = useTranslation();
+  const heroStats = t("home.liveDashboard.stats", defaultHeroStats);
+  const liveDashboardTitle = t("home.liveDashboard.title", "Live Dashboard");
+  const featuredTitle = t(
+    "home.liveDashboard.featuredTitle",
+    "Geneva Science Olympiad Team"
+  );
+  const featuredDetail = t(
+    "home.liveDashboard.featuredDetail",
+    "Gold Medal • Greenhouse Automation"
+  );
+  const journeyCopy = {
+    kicker: t("home.journey.kicker", "Year in Motion"),
+    title: t(
+      "home.journey.title",
+      "A curated journey for residents & delegates"
+    ),
+    button: t("home.journey.button", "Upcoming experiences"),
+  };
+  const journeyMoments = t("home.journey.timeline", defaultJourneyTimeline);
+  const newsCopy = {
+    title: t("home.news.title", "Latest News"),
+    subtitle: t(
+      "home.news.subtitle",
+      "Stay updated with our latest announcements and achievements"
+    ),
+  };
+  const eventsCopy = {
+    title: t("home.events.title", "Upcoming Events"),
+    subtitle: t(
+      "home.events.subtitle",
+      "Join us for these exciting upcoming events"
+    ),
+    button: t("home.events.button", "View All Events"),
+  };
+  const boardingCopy = {
+    kicker: t("home.boarding.kicker", "Dormitory & Residential Life"),
+    title: t(
+      "home.boarding.title",
+      "A Calm, Connected sanctuary that feels like home"
+    ),
+    description: t(
+      "home.boarding.description",
+      "Our dormitory integrates wellness pods, panoramic study decks, and quiet ateliers. Evening fireside forums, global cuisine nights, and mentorship suites make boarding unforgettable."
+    ),
+    cards: {
+      spacesTitle: t("home.boarding.cards.spacesTitle", "Spaces"),
+      spacesDescription: t(
+        "home.boarding.cards.spacesDescription",
+        "Meditation loft • Recording lab • Sky court"
+      ),
+      communityTitle: t("home.boarding.cards.communityTitle", "Community"),
+      communityDescription: t(
+        "home.boarding.cards.communityDescription",
+        "House competitions, late-night tutoring, global roommates"
+      ),
+    },
+  };
+  const boardingHighlights = t(
+    "home.boarding.highlights",
+    defaultBoardingHighlights
+  );
+  const globalHighlightsCopy = {
+    kicker: t("home.globalHighlights.kicker", "Olympiad Journeys"),
+    title: t(
+      "home.globalHighlights.title",
+      "Global Footprints & Victories"
+    ),
+    subtitle: t(
+      "home.globalHighlights.subtitle",
+      "Teams from our school travel across continents for Olympiads, cultural forums, and innovation labs."
+    ),
+    button: t(
+      "home.globalHighlights.button",
+      "Explore upcoming delegations"
+    ),
+    viewJourney: t("home.globalHighlights.viewJourney", "View journey"),
+    defaultDestination: t(
+      "home.globalHighlights.defaultDestination",
+      "Olympiad"
+    ),
+  };
+  const teachersCopy = {
+    title: t("home.teachers.title", "Our Expert Teachers"),
+    subtitle: t(
+      "home.teachers.subtitle",
+      "Meet our dedicated and experienced faculty members"
+    ),
+    button: t("home.teachers.button", "Meet All Teachers"),
+  };
+  const ctaCopy = {
+    title: t("home.cta.title", "Ready to Begin Your Journey?"),
+    subtitle: t(
+      "home.cta.subtitle",
+      "Join our community of learners and discover your potential"
+    ),
+    primaryButton: t("home.cta.primaryButton", "Get Started"),
+    secondaryButton: t("home.cta.secondaryButton", "Learn More"),
+  };
 
   const heroVideo =
-    "https://cdn.coverr.co/videos/coverr-students-collaborating-5402/1080p.mp4";
-
-  const heroStats = [
-    {
-      label: "Global Delegations",
-      value: "18+",
-      detail: "Olympiad teams / yr",
-    },
-    { label: "Boarding Studios", value: "12", detail: "creative + STEM labs" },
-    { label: "Scholar Projects", value: "140", detail: "mentored annually" },
-  ];
+    "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
 
   const eventCoverPool = [
     "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=60",
@@ -43,59 +193,22 @@ const Home = () => {
     "https://images.unsplash.com/photo-1455885666463-1c1ecaf495ad?auto=format&fit=crop&w=1200&q=60",
   ];
 
-  const journeyMoments = [
-    {
-      title: "Ignite Phase",
-      time: "September",
-      detail:
-        "Hackathons, studio residencies, and design sprints kick off the academic year.",
-    },
-    {
-      title: "Explore Phase",
-      time: "January",
-      detail:
-        "Delegations travel to Berlin, Warsaw, Dubai, and beyond for Olympiads and exchanges.",
-    },
-    {
-      title: "Impact Phase",
-      time: "May",
-      detail:
-        "Finale showcases combine research, installations, and community changemaker labs.",
-    },
-  ];
-
-  const boardingHighlights = [
-    {
-      title: "Modern Dormitory",
-      description:
-        "Panoramic study lounges, wellness pods, and calming biophilic interiors for boarders.",
-      icon: "🏛️",
-      accent: "from-[#87CEEB]/30 via-white to-transparent",
-    },
-    {
-      title: "Clubs & Activities",
-      description:
-        "70+ student-led clubs, midnight astronomy, culinary labs, creative media studio.",
-      icon: "🎨",
-      accent: "from-[#c084fc]/30 via-white to-transparent",
-    },
-    {
-      title: "Weekend Adventures",
-      description:
-        "Eco-hikes, cultural immersions, and leadership retreats around the region.",
-      icon: "🧭",
-      accent: "from-[#a5b4fc]/30 via-white to-transparent",
-    },
-  ];
-
   const globalHighlights = olympiads.slice(0, 3).map((entry) => ({
     id: entry.id,
-    destination: entry.location || "Olympiad",
+    destination: entry.location || globalHighlightsCopy.defaultDestination,
     highlight: entry.title,
     detail: new Date(entry.olympiad_date).toLocaleDateString(),
   }));
-  useEffect(() => {
-    fetchData();
+
+  const cleanupTeacherScroll = useCallback(() => {
+    if (teachersScrollTimeoutRef.current) {
+      clearTimeout(teachersScrollTimeoutRef.current);
+      teachersScrollTimeoutRef.current = null;
+    }
+    if (teachersScrollCleanupRef.current) {
+      teachersScrollCleanupRef.current();
+      teachersScrollCleanupRef.current = null;
+    }
   }, []);
 
   useEffect(() => {
@@ -107,7 +220,8 @@ const Home = () => {
     }
   }, [news]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    setLoading(true);
     try {
       const [
         newsRes,
@@ -117,16 +231,65 @@ const Home = () => {
         olympiadsRes,
         momentsRes,
       ] = await Promise.all([
-        getNews(),
-        getEvents(),
-        getTeachers(),
-        getStats(),
-        getOlympiads(),
-        getMoments(),
+        getNews(language),
+        getEvents(language),
+        getTeachers(language),
+        getStats(language),
+        getOlympiads(language),
+        getMoments(language),
       ]);
       setNews(newsRes.data);
       setEvents(eventsRes.data.slice(0, 3));
       setTeachers(teachersRes.data.slice(0, 4));
+
+      cleanupTeacherScroll();
+
+      teachersScrollTimeoutRef.current = setTimeout(() => {
+        if (teachersScrollRef.current && teachersRes.data.length > 0) {
+          const container = teachersScrollRef.current;
+          let scrollPosition = 0;
+          const scrollSpeed = 0.5;
+          let animationFrameId;
+          const cardWidth = 320 + 32; // w-80 (320px) + gap-8 (32px)
+          const singleSetWidth = teachersRes.data.slice(0, 4).length * cardWidth;
+
+          const autoScroll = () => {
+            scrollPosition += scrollSpeed;
+
+            if (scrollPosition >= singleSetWidth) {
+              scrollPosition = scrollPosition - singleSetWidth;
+            }
+
+            container.scrollLeft = scrollPosition;
+            animationFrameId = requestAnimationFrame(autoScroll);
+          };
+
+          const handleMouseEnter = () => {
+            if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+            }
+          };
+
+          const handleMouseLeave = () => {
+            animationFrameId = requestAnimationFrame(autoScroll);
+          };
+
+          container.addEventListener("mouseenter", handleMouseEnter);
+          container.addEventListener("mouseleave", handleMouseLeave);
+
+          animationFrameId = requestAnimationFrame(autoScroll);
+
+          teachersScrollCleanupRef.current = () => {
+            if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+            }
+            container.removeEventListener("mouseenter", handleMouseEnter);
+            container.removeEventListener("mouseleave", handleMouseLeave);
+          };
+        }
+        teachersScrollTimeoutRef.current = null;
+      }, 1000);
+
       setStats(statsRes.data);
       setOlympiads(olympiadsRes.data);
       setMoments(momentsRes.data);
@@ -135,12 +298,17 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [cleanupTeacherScroll, language]);
+
+  useEffect(() => {
+    fetchData();
+    return () => cleanupTeacherScroll();
+  }, [fetchData, cleanupTeacherScroll]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#87CEEB]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1e3a8a]"></div>
       </div>
     );
   }
@@ -168,7 +336,7 @@ const Home = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              Boarding • Olympiad • Studio
+              {t("hero.kicker", "Boarding • Olympiad • Studio")}
             </motion.p>
             <motion.h1
               className="font-display text-4xl sm:text-5xl lg:text-6xl leading-tight mb-6"
@@ -176,7 +344,10 @@ const Home = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.7 }}
             >
-              Where curiosity fuels victories and creativity never sleeps.
+              {t(
+                "hero.title",
+                "Where curiosity fuels victories and creativity never sleeps."
+              )}
             </motion.h1>
             <motion.p
               className="text-lg text-white/85 mb-10 leading-relaxed max-w-2xl"
@@ -184,9 +355,10 @@ const Home = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.7 }}
             >
-              Explore a campus that feels like a boutique city—neon-lit labs,
-              panoramic dormitories, and teams gearing up for voyages from
-              Berlin to Batumi. Every moment is scripted for impact.
+              {t(
+                "hero.subtitle",
+                "Explore a campus that feels like a boutique city—neon-lit labs, panoramic dormitories, and teams gearing up for voyages from Berlin to Batumi."
+              )}
             </motion.p>
             <motion.div
               className="flex flex-col sm:flex-row gap-4"
@@ -195,16 +367,16 @@ const Home = () => {
               transition={{ delay: 0.3, duration: 0.6 }}
             >
               <a
-                className="px-8 py-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-[#0f172a] font-semibold rounded-full shadow-[0_10px_40px_rgba(125,211,252,0.35)] hover:scale-105 transition-all duration-300"
+                className="px-8 py-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white font-semibold rounded-full shadow-[0_10px_40px_rgba(30,58,138,0.35)] hover:scale-105 transition-all duration-300"
                 href="#experience"
               >
-                Plan a Visit
+                {t("hero.primaryCta", "Plan a Visit")}
               </a>
               <Link
                 to="/olympiads"
                 className="px-8 py-4 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-3"
               >
-                Olympiad Stories
+                {t("hero.secondaryCta", "Olympiad Stories")}
                 <span>↗</span>
               </Link>
             </motion.div>
@@ -217,7 +389,7 @@ const Home = () => {
             transition={{ delay: 0.3, duration: 0.6 }}
           >
             <div className="text-sm uppercase tracking-[0.35em] text-white/70 mb-6">
-              Live Dashboard
+              {liveDashboardTitle}
             </div>
             <div className="space-y-6">
               {heroStats.map((item) => (
@@ -233,15 +405,15 @@ const Home = () => {
                 </div>
               ))}
               <div className="flex items-center gap-4 pt-2">
-                <div className="w-12 h-12 rounded-full bg-[#87CEEB]/30 flex items-center justify-center text-2xl">
+                <div className="w-12 h-12 rounded-full bg-[#1e3a8a]/30 flex items-center justify-center text-2xl">
                   🌍
                 </div>
                 <div>
                   <p className="text-white font-semibold">
-                    Geneva Science Olympiad Team
+                    {featuredTitle}
                   </p>
                   <p className="text-white/70 text-sm">
-                    Gold Medal • Greenhouse Automation
+                    {featuredDetail}
                   </p>
                 </div>
               </div>
@@ -250,7 +422,7 @@ const Home = () => {
         </div>
 
         <motion.div
-          className="absolute -bottom-16 -right-10 w-72 h-72 bg-[#c084fc]/30 blur-[80px]"
+          className="absolute -bottom-16 -right-10 w-72 h-72 bg-[#1e3a8a]/30 blur-[80px]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.8 }}
           transition={{ delay: 0.5, duration: 1 }}
@@ -266,17 +438,17 @@ const Home = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="uppercase tracking-[0.4em] text-xs text-gray-400">
-                Year in Motion
+                {journeyCopy.kicker}
               </p>
               <h2 className="font-display text-3xl font-bold text-gray-900">
-                A curated journey for residents & delegates
+                {journeyCopy.title}
               </h2>
             </div>
             <Link
               to="/events"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
             >
-              Upcoming experiences
+              {journeyCopy.button}
               <span>↗</span>
             </Link>
           </div>
@@ -290,7 +462,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
               >
-                <p className="text-xs uppercase tracking-[0.4em] text-[#7dd3fc]">
+                <p className="text-xs uppercase tracking-[0.4em] text-[#1e3a8a]">
                   {moment.time}
                 </p>
                 <h3 className="font-display text-2xl font-semibold text-gray-900 mt-2 mb-3">
@@ -316,7 +488,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
               >
-                <div className="text-5xl font-bold bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent mb-2">
+                <div className="text-5xl font-bold bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent mb-2">
                   {stat.stat_value}+
                 </div>
                 <div className="text-gray-600 font-medium">{stat.label}</div>
@@ -331,11 +503,11 @@ const Home = () => {
         <section className="py-20 bg-gray-50" id="explore">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
-                Latest News
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent">
+                {newsCopy.title}
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                Stay updated with our latest announcements and achievements
+                {newsCopy.subtitle}
               </p>
             </div>
 
@@ -358,7 +530,7 @@ const Home = () => {
                       {item.image_url && (
                         <div className="w-1/2 hidden md:block">
                           <img
-                            src={`${MEDIA_BASE_URL}${item.image_url}`}
+                            src={buildMediaUrl(item.image_url)}
                             alt={item.title}
                             className="w-full h-full object-cover"
                           />
@@ -375,7 +547,7 @@ const Home = () => {
                         <p className="text-gray-600 mb-6 leading-relaxed line-clamp-4">
                           {item.content.substring(0, 200)}...
                         </p>
-                        <span className="text-[#87CEEB] font-semibold">
+                        <span className="text-[#1e3a8a] font-semibold">
                           {new Date(item.publish_date).toLocaleDateString()}
                         </span>
                       </div>
@@ -390,7 +562,7 @@ const Home = () => {
                     key={index}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       index === currentNewsIndex
-                        ? "w-8 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc]"
+                        ? "w-8 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af]"
                         : "w-2 bg-gray-300"
                     }`}
                     onClick={() => setCurrentNewsIndex(index)}
@@ -407,11 +579,11 @@ const Home = () => {
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
-                Upcoming Events
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent">
+                {eventsCopy.title}
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                Join us for these exciting upcoming events
+                {eventsCopy.subtitle}
               </p>
             </div>
 
@@ -429,7 +601,7 @@ const Home = () => {
                     <img
                       src={
                         event.image_url
-                          ? `${MEDIA_BASE_URL}${event.image_url}`
+                          ? buildMediaUrl(event.image_url)
                           : eventCoverPool[index % eventCoverPool.length]
                       }
                       alt={event.title}
@@ -465,9 +637,9 @@ const Home = () => {
             <div className="text-center">
               <a
                 href="/events"
-                className="inline-block px-8 py-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="inline-block px-8 py-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
-                View All Events
+                {eventsCopy.button}
               </a>
             </div>
           </div>
@@ -480,8 +652,8 @@ const Home = () => {
         className="py-20 bg-gradient-to-br from-[#f0fdfa] to-[#f5f3ff] relative overflow-hidden"
       >
         <div className="absolute inset-0 opacity-20">
-          <div className="w-64 h-64 bg-[#87CEEB]/40 blur-3xl absolute -top-10 -left-10"></div>
-          <div className="w-72 h-72 bg-[#c084fc]/35 blur-3xl absolute bottom-0 right-0"></div>
+          <div className="w-64 h-64 bg-[#1e3a8a]/40 blur-3xl absolute -top-10 -left-10"></div>
+          <div className="w-72 h-72 bg-[#1e40af]/35 blur-3xl absolute bottom-0 right-0"></div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-12">
@@ -492,31 +664,29 @@ const Home = () => {
               viewport={{ once: true }}
             >
               <p className="uppercase tracking-[0.4em] text-xs text-gray-500 mb-4">
-                Dormitory & Residential Life
+                {boardingCopy.kicker}
               </p>
               <h2 className="font-display text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-                A Calm, Connected sanctuary that feels like home
+                {boardingCopy.title}
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
-                Our dormitory integrates wellness pods, panoramic study decks,
-                and quiet ateliers. Evening fireside forums, global cuisine
-                nights, and mentorship suites make boarding unforgettable.
+                {boardingCopy.description}
               </p>
               <div className="mt-8 grid sm:grid-cols-2 gap-6">
                 <div className="p-5 bg-white rounded-2xl shadow-lg border border-gray-100">
                   <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-2">
-                    Spaces
+                    {boardingCopy.cards.spacesTitle}
                   </p>
                   <p className="text-xl font-semibold text-gray-900">
-                    Meditation loft • Recording lab • Sky court
+                    {boardingCopy.cards.spacesDescription}
                   </p>
                 </div>
                 <div className="p-5 bg-white rounded-2xl shadow-lg border border-gray-100">
                   <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-2">
-                    Community
+                    {boardingCopy.cards.communityTitle}
                   </p>
                   <p className="text-xl font-semibold text-gray-900">
-                    House competitions, late-night tutoring, global roommates
+                    {boardingCopy.cards.communityDescription}
                   </p>
                 </div>
               </div>
@@ -555,14 +725,13 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <p className="uppercase tracking-[0.3em] text-xs text-gray-400 mb-4">
-              Olympiad Journeys
+              {globalHighlightsCopy.kicker}
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
-              Global Footprints & Victories
+              {globalHighlightsCopy.title}
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Teams from our school travel across continents for Olympiads,
-              cultural forums, and innovation labs.
+              {globalHighlightsCopy.subtitle}
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -585,10 +754,10 @@ const Home = () => {
                 <p className="text-gray-600 mb-6">{trip.detail}</p>
                 <Link
                   to={`/olympiads/${trip.id}`}
-                  className="inline-flex items-center gap-2 font-semibold text-[#7dd3fc]"
+                  className="inline-flex items-center gap-2 font-semibold text-[#1e3a8a]"
                 >
-                  View journey
-                  <span className="h-6 w-6 rounded-full bg-[#7dd3fc]/10 flex items-center justify-center group-hover:translate-x-1 transition-all duration-300">
+                  {globalHighlightsCopy.viewJourney}
+                  <span className="h-6 w-6 rounded-full bg-[#1e3a8a]/10 flex items-center justify-center group-hover:translate-x-1 transition-all duration-300">
                     →
                   </span>
                 </Link>
@@ -600,7 +769,7 @@ const Home = () => {
               to="/events"
               className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white border border-gray-200 hover:shadow-lg transition"
             >
-              Explore upcoming delegations
+              {globalHighlightsCopy.button}
               <span>↗</span>
             </Link>
           </div>
@@ -615,60 +784,104 @@ const Home = () => {
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
-                Our Expert Teachers
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent">
+                {teachersCopy.title}
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                Meet our dedicated and experienced faculty members
+                {teachersCopy.subtitle}
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-              {teachers.map((teacher, index) => (
-                <motion.div
-                  key={teacher.id}
-                  className="bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                >
-                  <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-[#87CEEB] shadow-lg">
-                    {teacher.photo_url ? (
-                      <img
-                        src={`${MEDIA_BASE_URL}${teacher.photo_url}`}
-                        alt={teacher.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[#7dd3fc] to-[#c084fc] flex items-center justify-center text-5xl">
-                        👤
-                      </div>
+            <div className="relative">
+              <div 
+                ref={teachersScrollRef}
+                className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                }}
+              >
+                {/* First set of teachers */}
+                {teachers.map((teacher, index) => (
+                  <motion.div
+                    key={`teacher-${teacher.id}-1`}
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                  >
+                    <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-[#1e3a8a] shadow-lg">
+                      {teacher.photo_url ? (
+                        <img
+                          src={buildMediaUrl(teacher.photo_url)}
+                          alt={teacher.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-5xl">
+                          👤
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="font-display text-xl font-bold mb-2 text-gray-900">
+                      {teacher.name}
+                    </h3>
+                    {teacher.subjects && (
+                      <p className="text-[#1e3a8a] font-semibold mb-2">
+                        {teacher.subjects}
+                      </p>
                     )}
-                  </div>
-                  <h3 className="font-display text-xl font-bold mb-2 text-gray-900">
-                    {teacher.name}
-                  </h3>
-                  {teacher.subjects && (
-                    <p className="text-[#87CEEB] font-semibold mb-2">
-                      {teacher.subjects}
-                    </p>
-                  )}
-                  {teacher.bio && (
-                    <p className="text-gray-600 text-sm line-clamp-3">
-                      {teacher.bio.substring(0, 100)}...
-                    </p>
-                  )}
-                </motion.div>
-              ))}
+                    {teacher.bio && (
+                      <div className="text-gray-600 text-sm line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio.substring(0, 100) + '...' }} />
+                    )}
+                  </motion.div>
+                ))}
+                {/* Duplicate set for infinite scroll */}
+                {teachers.map((teacher, index) => (
+                  <motion.div
+                    key={`teacher-${teacher.id}-2`}
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                  >
+                    <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-[#1e3a8a] shadow-lg">
+                      {teacher.photo_url ? (
+                        <img
+                          src={buildMediaUrl(teacher.photo_url)}
+                          alt={teacher.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-5xl">
+                          👤
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="font-display text-xl font-bold mb-2 text-gray-900">
+                      {teacher.name}
+                    </h3>
+                    {teacher.subjects && (
+                      <p className="text-[#1e3a8a] font-semibold mb-2">
+                        {teacher.subjects}
+                      </p>
+                    )}
+                    {teacher.bio && (
+                      <div className="text-gray-600 text-sm line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio.substring(0, 100) + '...' }} />
+                    )}
+                  </motion.div>
+                ))}
+              </div>
             </div>
 
             <div className="text-center">
               <a
                 href="/teachers"
-                className="inline-block px-8 py-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="inline-block px-8 py-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
-                Meet All Teachers
+                {teachersCopy.button}
               </a>
             </div>
           </div>
@@ -676,7 +889,7 @@ const Home = () => {
       )}
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc]">
+      <section className="py-20 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -685,23 +898,23 @@ const Home = () => {
             transition={{ duration: 0.8 }}
           >
             <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Begin Your Journey?
+              {ctaCopy.title}
             </h2>
             <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-              Join our community of learners and discover your potential
+              {ctaCopy.subtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/contact"
-                className="px-8 py-4 bg-white text-[#87CEEB] font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                className="px-8 py-4 bg-white text-[#1e3a8a] font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300"
               >
-                Get Started
+                {ctaCopy.primaryButton}
               </a>
               <a
                 href="/about"
-                className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-[#87CEEB] transition-all duration-300"
+                className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-[#1e3a8a] transition-all duration-300"
               >
-                Learn More
+                {ctaCopy.secondaryButton}
               </a>
             </div>
           </motion.div>

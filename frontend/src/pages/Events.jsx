@@ -1,24 +1,29 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { getEvents, MEDIA_BASE_URL } from '../services/api'
+import { getEvents, buildMediaUrl } from '../services/api'
+import { useLanguage } from '../context/LanguageContext'
+import { useTranslation } from '../hooks/useTranslation'
 
 const Events = () => {
   const [events, setEvents] = useState([])
   const [filteredEvents, setFilteredEvents] = useState([])
   const [filter, setFilter] = useState('all')
   const [loading, setLoading] = useState(true)
+  const { language } = useLanguage()
+  const { t } = useTranslation()
 
   useEffect(() => {
     fetchEvents()
-  }, [])
+  }, [language])
 
   useEffect(() => {
     filterEvents()
   }, [events, filter])
 
   const fetchEvents = async () => {
+    setLoading(true)
     try {
-      const response = await getEvents()
+      const response = await getEvents(language)
       setEvents(response.data)
     } catch (error) {
       console.error('Error fetching events:', error)
@@ -51,20 +56,33 @@ const Events = () => {
     )
   }
 
+  const heroVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
+
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section className="relative min-h-[70vh] py-24 text-white overflow-hidden">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={heroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#030711]/90 via-[#051833]/70 to-[#03121d]/90" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(135,206,235,0.35),_transparent)]" />
         <motion.div
-          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">Events</h1>
+          <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
+            {t("events.heroTitle", "Events")}
+          </h1>
           <p className="text-xl md:text-2xl text-white/90">
-            Stay connected with our school community events
+            {t("events.heroSubtitle", "Stay connected with our school community events")}
           </p>
         </motion.div>
       </section>
@@ -83,14 +101,14 @@ const Events = () => {
                     : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
                 }`}
               >
-                {f === 'all' ? 'All Events' : f}
+                {t(`events.filters.${f}`, f === 'all' ? 'All Events' : f)}
               </button>
             ))}
           </div>
 
           {filteredEvents.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-500 text-xl">No events found.</p>
+              <p className="text-gray-500 text-xl">{t("events.noEvents", "No events found.")}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -106,7 +124,7 @@ const Events = () => {
                   {event.image_url && (
                     <div className="h-56 overflow-hidden">
                       <img
-                        src={`${MEDIA_BASE_URL}${event.image_url}`}
+                        src={buildMediaUrl(event.image_url)}
                         alt={event.title}
                         className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                       />

@@ -7,3 +7,37 @@
     @apply font-sans text-gray-800 antialiased bg-gray-50;
   }
 }
+
+.ql-container.ql-snow {
+  background-color: #1f2937;
+  border-color: #374151;
+  border-radius: 0.5rem;
+}
+
+.ql-toolbar.ql-snow {
+  background-color: #101827;
+  border-color: #374151;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.ql-toolbar.ql-snow .ql-stroke {
+  stroke: #e5e7eb;
+}
+
+.ql-toolbar.ql-snow .ql-fill {
+  fill: #e5e7eb;
+}
+
+.ql-toolbar.ql-snow .ql-picker {
+  color: #e5e7eb;
+}
+
+.ql-editor {
+  min-height: 200px;
+  color: #f3f4f6;
+}
+
+.ql-editor.ql-blank::before {
+  color: #9ca3af;
+  font-style: normal;
+}

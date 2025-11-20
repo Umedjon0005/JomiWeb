@@ -26,6 +26,14 @@ const createTables = async () => {
       )
     `);
 
+    await pool.query(`
+      ALTER TABLE news
+      ADD COLUMN IF NOT EXISTS title_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS title_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS content_ru TEXT,
+      ADD COLUMN IF NOT EXISTS content_tj TEXT
+    `);
+
     // Events table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS events (
@@ -38,6 +46,16 @@ const createTables = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    await pool.query(`
+      ALTER TABLE events
+      ADD COLUMN IF NOT EXISTS title_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS title_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS description_ru TEXT,
+      ADD COLUMN IF NOT EXISTS description_tj TEXT,
+      ADD COLUMN IF NOT EXISTS location_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS location_tj VARCHAR(255)
     `);
 
     // Olympiads table
@@ -58,6 +76,20 @@ const createTables = async () => {
       )
     `);
 
+    await pool.query(`
+      ALTER TABLE olympiads
+      ADD COLUMN IF NOT EXISTS title_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS title_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS description_ru TEXT,
+      ADD COLUMN IF NOT EXISTS description_tj TEXT,
+      ADD COLUMN IF NOT EXISTS location_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS location_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS winner_name_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS winner_name_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS project_name_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS project_name_tj VARCHAR(255)
+    `);
+
     // Campus moments gallery
     await pool.query(`
       CREATE TABLE IF NOT EXISTS moments (
@@ -69,6 +101,35 @@ const createTables = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    await pool.query(`
+      ALTER TABLE moments
+      ADD COLUMN IF NOT EXISTS title_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS title_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS caption_ru TEXT,
+      ADD COLUMN IF NOT EXISTS caption_tj TEXT
+    `);
+
+    // Photos showcase table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS photos (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        image_url VARCHAR(500) NOT NULL,
+        sort_order INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await pool.query(`
+      ALTER TABLE photos
+      ADD COLUMN IF NOT EXISTS title_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS title_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS description_ru TEXT,
+      ADD COLUMN IF NOT EXISTS description_tj TEXT
     `);
 
     // Teachers table
@@ -85,6 +146,18 @@ const createTables = async () => {
       )
     `);
 
+    await pool.query(`
+      ALTER TABLE teachers
+      ADD COLUMN IF NOT EXISTS name_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS name_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS bio_ru TEXT,
+      ADD COLUMN IF NOT EXISTS bio_tj TEXT,
+      ADD COLUMN IF NOT EXISTS qualifications_ru TEXT,
+      ADD COLUMN IF NOT EXISTS qualifications_tj TEXT,
+      ADD COLUMN IF NOT EXISTS subjects_ru TEXT,
+      ADD COLUMN IF NOT EXISTS subjects_tj TEXT
+    `);
+
     // About content table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS about_content (
@@ -96,6 +169,14 @@ const createTables = async () => {
       )
     `);
 
+    await pool.query(`
+      ALTER TABLE about_content
+      ADD COLUMN IF NOT EXISTS title_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS title_tj VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS content_ru TEXT,
+      ADD COLUMN IF NOT EXISTS content_tj TEXT
+    `);
+
     // Stats table for home page numbers
     await pool.query(`
       CREATE TABLE IF NOT EXISTS stats (
@@ -105,6 +186,12 @@ const createTables = async () => {
         label VARCHAR(255) NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    await pool.query(`
+      ALTER TABLE stats
+      ADD COLUMN IF NOT EXISTS label_ru VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS label_tj VARCHAR(255)
     `);
 
     // Insert default admin user (password: admin123)

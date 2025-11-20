@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MEDIA_BASE_URL } from "../services/api";
+import { buildMediaUrl } from "../services/api";
 
 const fallbackMoments = [
   {
@@ -49,13 +49,13 @@ const fallbackMoments = [
 
 const normalizeImage = (image, index) => {
   if (image) {
-    if (image.startsWith("http")) return image;
-    return `${MEDIA_BASE_URL}${image}`;
+    return buildMediaUrl(image);
   }
   return fallbackMoments[index % fallbackMoments.length].image;
 };
 
 const MomentsGallery = ({ moments = [] }) => {
+  // Always show all moments from database, fallback only if empty
   const galleryItems =
     moments.length > 0
       ? moments.map((item, index) => ({
@@ -65,6 +65,9 @@ const MomentsGallery = ({ moments = [] }) => {
           image: normalizeImage(item.image_url, index),
         }))
       : fallbackMoments;
+  
+  // Ensure we show all items, not limiting
+  const displayItems = galleryItems;
 
   return (
     <section className="relative py-24 bg-gradient-to-br from-[#fdf2f8] via-white to-[#ecfeff] overflow-hidden">
@@ -94,7 +97,7 @@ const MomentsGallery = ({ moments = [] }) => {
 
         <div className="overflow-x-auto pb-6">
           <div className="flex gap-6 min-w-[600px] snap-x snap-mandatory">
-            {galleryItems.map((moment, index) => (
+            {displayItems.map((moment, index) => (
               <motion.div
                 key={moment.title}
                 className="snap-start flex-shrink-0 w-[320px] md:w-[360px] bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100"
@@ -143,7 +146,7 @@ const MomentsGallery = ({ moments = [] }) => {
               animate={{ x: ["0%", "-50%"] }}
               transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
             >
-              {[...galleryItems, ...galleryItems].map((moment, index) => (
+              {[...displayItems, ...displayItems].map((moment, index) => (
                 <div
                   key={`${moment.title}-${index}`}
                   className="flex items-center gap-3 bg-white rounded-2xl shadow-md p-3 min-w-[220px]"

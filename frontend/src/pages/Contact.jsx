@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { submitContact } from '../services/api'
+import { useTranslation } from '../hooks/useTranslation'
 
 const Contact = () => {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,26 +32,39 @@ const Contact = () => {
       setTimeout(() => setSubmitted(false), 5000)
     } catch (error) {
       console.error('Error submitting form:', error)
-      alert('There was an error submitting your message. Please try again.')
+      alert(t('contact.form.error', "There was an error submitting your message. Please try again."))
     } finally {
       setSubmitting(false)
     }
   }
 
+  const heroVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
+
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section className="relative min-h-[70vh] py-24 text-white overflow-hidden">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={heroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#030711]/90 via-[#051833]/70 to-[#03121d]/90" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(135,206,235,0.35),_transparent)]" />
         <motion.div
-          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">Contact Us</h1>
+          <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
+            {t("contact.heroTitle", "Contact Us")}
+          </h1>
           <p className="text-xl md:text-2xl text-white/90">
-            We'd love to hear from you. Get in touch with us!
+            {t("contact.heroSubtitle", "We'd love to hear from you. Get in touch with us!")}
           </p>
         </motion.div>
       </section>
@@ -65,20 +80,22 @@ const Contact = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="font-display text-3xl font-bold mb-6 text-gray-900">Get in Touch</h2>
+              <h2 className="font-display text-3xl font-bold mb-6 text-gray-900">
+                {t("contact.getInTouch", "Get in Touch")}
+              </h2>
               <p className="text-gray-600 mb-10 text-lg">
-                Have questions or want to learn more? We're here to help!
+                {t("contact.description", "Have questions or want to learn more? We're here to help!")}
               </p>
 
               <div className="space-y-6">
                 {[
-                  { icon: '📧', title: 'Email', content: 'info@eduschool.com' },
-                  { icon: '📞', title: 'Phone', content: '+1 (555) 123-4567' },
-                  { icon: '📍', title: 'Address', content: '123 Education Street\nCity, State 12345' },
-                  { icon: '🕒', title: 'Office Hours', content: 'Monday - Friday: 8:00 AM - 5:00 PM' }
+                  { icon: '📧', title: t("contact.contactInfo.email", "Email"), content: 'info@abdurahmonijomi.com' },
+                  { icon: '📞', title: t("contact.contactInfo.phone", "Phone"), content: '+1 (555) 123-4567' },
+                  { icon: '📍', title: t("contact.contactInfo.address", "Address"), content: '123 Education Street\nCity, State 12345' },
+                  { icon: '🕒', title: t("contact.contactInfo.officeHours", "Office Hours"), content: 'Monday - Friday: 8:00 AM - 5:00 PM' }
                 ].map((item, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] flex items-center justify-center text-2xl flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-2xl flex-shrink-0">
                       {item.icon}
                     </div>
                     <div>
@@ -100,50 +117,58 @@ const Contact = () => {
               transition={{ duration: 0.6 }}
             >
               {submitted && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white rounded-xl text-center font-semibold">
-                  ✓ Thank you! Your message has been sent successfully.
+                <div className="mb-6 p-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white rounded-xl text-center font-semibold">
+                  {t("contact.form.success", "✓ Thank you! Your message has been sent successfully.")}
                 </div>
               )}
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-900">Name *</label>
+                  <label className="block text-sm font-semibold mb-2 text-gray-900">
+                    {t("contact.form.name", "Name *")}
+                  </label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#87CEEB] transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1e3a8a] transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-900">Email *</label>
+                  <label className="block text-sm font-semibold mb-2 text-gray-900">
+                    {t("contact.form.email", "Email *")}
+                  </label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#87CEEB] transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1e3a8a] transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-900">Subject *</label>
+                  <label className="block text-sm font-semibold mb-2 text-gray-900">
+                    {t("contact.form.subject", "Subject *")}
+                  </label>
                   <input
                     type="text"
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#87CEEB] transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1e3a8a] transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-900">Message *</label>
+                  <label className="block text-sm font-semibold mb-2 text-gray-900">
+                    {t("contact.form.message", "Message *")}
+                  </label>
                   <textarea
                     name="message"
                     rows="6"
@@ -157,9 +182,9 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full px-8 py-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-8 py-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {submitting ? 'Sending...' : 'Send Message'}
+                  {submitting ? t("contact.form.sending", "Sending...") : t("contact.form.sendMessage", "Send Message")}
                 </button>
               </div>
             </motion.form>

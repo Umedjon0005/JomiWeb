@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { getOlympiadById, MEDIA_BASE_URL } from "../services/api";
+import { getOlympiadById, buildMediaUrl } from "../services/api";
+import { useLanguage } from "../context/LanguageContext";
 
 const OlympiadDetails = () => {
   const { id } = useParams();
   const [olympiad, setOlympiad] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
 
   useEffect(() => {
     const fetchOlympiad = async () => {
       try {
-        const response = await getOlympiadById(id);
+        const response = await getOlympiadById(id, language);
         setOlympiad(response.data);
       } catch (error) {
         console.error("Error fetching olympiad:", error);
@@ -21,7 +23,7 @@ const OlympiadDetails = () => {
     };
 
     fetchOlympiad();
-  }, [id]);
+  }, [id, language]);
 
   if (loading) {
     return (
@@ -54,26 +56,22 @@ const OlympiadDetails = () => {
     );
   }
 
+  const heroVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
+
   return (
     <div className="pt-20 bg-gray-50 min-h-screen">
-      <section className="relative bg-gradient-to-br from-[#0f172a] via-[#133d5c] to-[#0f172a] text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
-          {[...Array(20)].map((_, idx) => (
-            <motion.span
-              key={idx}
-              className="absolute text-5xl"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-              }}
-              animate={{ opacity: [0, 1, 0], y: [0, -20, 0] }}
-              transition={{ duration: 8 + idx, repeat: Infinity }}
-            >
-              {["✈", "🎓", "✨", "⚙️", "📚"][idx % 5]}
-            </motion.span>
-          ))}
-        </div>
-        <div className="relative max-w-6xl mx-auto px-4 py-24 text-center">
+      <section className="relative min-h-[60vh] text-white overflow-hidden">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={heroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#030711]/90 via-[#051833]/70 to-[#03121d]/90" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(135,206,235,0.35),_transparent)]" />
+        <div className="relative z-10 max-w-6xl mx-auto px-4 py-24 text-center">
           <p className="uppercase tracking-[0.5em] text-xs text-white/70 mb-4">
             Olympiad Memoirs
           </p>
@@ -171,7 +169,7 @@ const OlympiadDetails = () => {
               {olympiad.image_url && (
                 <div className="rounded-3xl overflow-hidden shadow-lg">
                   <img
-                    src={`${MEDIA_BASE_URL}${olympiad.image_url}`}
+                    src={buildMediaUrl(olympiad.image_url)}
                     alt={olympiad.title}
                     className="h-72 w-full object-cover"
                   />
@@ -183,7 +181,7 @@ const OlympiadDetails = () => {
               {olympiad.project_image_url && (
                 <div className="rounded-3xl overflow-hidden shadow-lg">
                   <img
-                    src={`${MEDIA_BASE_URL}${olympiad.project_image_url}`}
+                    src={buildMediaUrl(olympiad.project_image_url)}
                     alt={olympiad.project_name || "Project"}
                     className="h-72 w-full object-cover"
                   />

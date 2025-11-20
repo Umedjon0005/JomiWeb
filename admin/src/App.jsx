@@ -11,6 +11,7 @@ import NewsManagement from "./pages/NewsManagement";
 import EventsManagement from "./pages/EventsManagement";
 import OlympiadsManagement from "./pages/OlympiadsManagement";
 import MomentsManagement from "./pages/MomentsManagement";
+import PhotosManagement from "./pages/PhotosManagement";
 import TeachersManagement from "./pages/TeachersManagement";
 import AboutManagement from "./pages/AboutManagement";
 import StatsManagement from "./pages/StatsManagement";
@@ -60,6 +61,7 @@ function App() {
           <Route path="events" element={<EventsManagement />} />
           <Route path="olympiads" element={<OlympiadsManagement />} />
           <Route path="moments" element={<MomentsManagement />} />
+          <Route path="photos" element={<PhotosManagement />} />
           <Route path="teachers" element={<TeachersManagement />} />
           <Route path="about" element={<AboutManagement />} />
           <Route path="stats" element={<StatsManagement />} />

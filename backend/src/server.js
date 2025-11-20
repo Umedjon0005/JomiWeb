@@ -48,6 +48,7 @@ app.use("/api/stats", require("./routes/statsRoutes"));
 app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/contact", require("./routes/contactRoutes"));
 app.use("/api/moments", require("./routes/momentsRoutes"));
+app.use("/api/photos", require("./routes/photosRoutes"));
 
 /**
  * @swagger

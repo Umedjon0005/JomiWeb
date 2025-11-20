@@ -3,11 +3,44 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply border-gray-200;
+  }
+  
   body {
     @apply font-sans text-gray-800 antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-semibold;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-[#1e3a8a] via-[#1e40af] to-[#1e293b] bg-clip-text text-transparent;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .smooth-shadow {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  
+  .smooth-shadow-lg {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 }

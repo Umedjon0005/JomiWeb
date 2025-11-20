@@ -1,17 +1,21 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { getOlympiads, MEDIA_BASE_URL } from "../services/api";
+import { getOlympiads, buildMediaUrl } from "../services/api";
 import { Link } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
+import { useTranslation } from "../hooks/useTranslation";
 
 const Olympiads = () => {
   const [olympiads, setOlympiads] = useState([]);
   const [filteredOlympiads, setFilteredOlympiads] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchOlympiads();
-  }, []);
+  }, [language]);
 
   useEffect(() => {
     filterOlympiads();
@@ -19,7 +23,7 @@ const Olympiads = () => {
 
   const fetchOlympiads = async () => {
     try {
-      const response = await getOlympiads();
+      const response = await getOlympiads(language);
       setOlympiads(response.data);
     } catch (error) {
       console.error("Error fetching olympiads:", error);
@@ -49,28 +53,38 @@ const Olympiads = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#87CEEB]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1e3a8a]"></div>
       </div>
     );
   }
 
+  const heroVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
+
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section className="relative min-h-[70vh] py-24 text-white overflow-hidden">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={heroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#030711]/90 via-[#051833]/70 to-[#03121d]/90" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(135,206,235,0.35),_transparent)]" />
         <motion.div
-          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
           <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
-            Olympiads
+            {t("olympiads.heroTitle", "Olympiads")}
           </h1>
           <p className="text-xl md:text-2xl text-white/90">
-            Discover our students&apos; achievements in national and
-            international olympiads
+            {t("olympiads.heroSubtitle", "Discover our students' achievements in national and international olympiads")}
           </p>
         </motion.div>
       </section>
@@ -85,18 +99,18 @@ const Olympiads = () => {
                 onClick={() => setFilter(f)}
                 className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 capitalize ${
                   filter === f
-                    ? "bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white shadow-lg"
+                    ? "bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white shadow-lg"
                     : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                 }`}
               >
-                {f === "all" ? "All Olympiads" : f}
+                {t(`olympiads.filters.${f}`, f === "all" ? "All Olympiads" : f)}
               </button>
             ))}
           </div>
 
           {filteredOlympiads.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-500 text-xl">No olympiads found.</p>
+              <p className="text-gray-500 text-xl">{t("olympiads.noOlympiads", "No olympiads found.")}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -112,7 +126,7 @@ const Olympiads = () => {
                   {olympiad.image_url && (
                     <div className="h-56 overflow-hidden">
                       <img
-                        src={`${MEDIA_BASE_URL}${olympiad.image_url}`}
+                        src={buildMediaUrl(olympiad.image_url)}
                         alt={olympiad.title}
                         className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                       />
@@ -149,10 +163,10 @@ const Olympiads = () => {
                       {(olympiad.winner_name || olympiad.project_name) && (
                         <div className="pt-2 text-sm text-gray-600">
                           <p className="font-semibold text-gray-800">
-                            Winner: {olympiad.winner_name || "N/A"}
+                            {t("olympiads.winner", "Winner")}: {olympiad.winner_name || "N/A"}
                           </p>
                           {olympiad.project_name && (
-                            <p>Project: {olympiad.project_name}</p>
+                            <p>{t("olympiads.project", "Project")}: {olympiad.project_name}</p>
                           )}
                         </div>
                       )}
@@ -162,9 +176,9 @@ const Olympiads = () => {
                             href={olympiad.reference_url}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-2 text-sm font-semibold text-[#7dd3fc]"
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-[#1e3a8a]"
                           >
-                            Official olympiad page
+                            {t("olympiads.officialPage", "Official olympiad page")}
                             <span>↗</span>
                           </a>
                         </div>
@@ -173,7 +187,7 @@ const Olympiads = () => {
                     {olympiad.project_image_url && (
                       <div className="mt-3 rounded-xl overflow-hidden border border-gray-100">
                         <img
-                          src={`${MEDIA_BASE_URL}${olympiad.project_image_url}`}
+                          src={buildMediaUrl(olympiad.project_image_url)}
                           alt={olympiad.project_name || "Project"}
                           className="w-full h-40 object-cover"
                         />
@@ -182,9 +196,9 @@ const Olympiads = () => {
                     <div className="pt-3">
                       <Link
                         to={`/olympiads/${olympiad.id}`}
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#87CEEB]"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#1e3a8a]"
                       >
-                        View details
+                        {t("olympiads.viewDetails", "View details")}
                         <span>→</span>
                       </Link>
                     </div>

@@ -1,18 +1,72 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { getTeachers, MEDIA_BASE_URL } from '../services/api'
+import { getTeachers, buildMediaUrl } from '../services/api'
+import { useLanguage } from '../context/LanguageContext'
+import { useTranslation } from '../hooks/useTranslation'
 
 const Teachers = () => {
   const [teachers, setTeachers] = useState([])
   const [loading, setLoading] = useState(true)
+  const scrollContainerRef = useRef(null)
+  const { language } = useLanguage()
+  const { t } = useTranslation()
 
   useEffect(() => {
     fetchTeachers()
-  }, [])
+  }, [language])
+
+  useEffect(() => {
+    if (teachers.length === 0 || !scrollContainerRef.current) return
+
+    const container = scrollContainerRef.current
+    let scrollPosition = 0
+    const scrollSpeed = 0.5 // pixels per frame
+    let animationFrameId
+    const cardWidth = 320 + 32 // w-80 (320px) + gap-8 (32px)
+
+    const autoScroll = () => {
+      scrollPosition += scrollSpeed
+      const singleSetWidth = teachers.length * cardWidth
+      
+      // When we've scrolled past one full set, reset to beginning seamlessly
+      if (scrollPosition >= singleSetWidth) {
+        scrollPosition = scrollPosition - singleSetWidth
+      }
+      
+      container.scrollLeft = scrollPosition
+      animationFrameId = requestAnimationFrame(autoScroll)
+    }
+
+    // Pause on hover
+    const handleMouseEnter = () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
+
+    const handleMouseLeave = () => {
+      animationFrameId = requestAnimationFrame(autoScroll)
+    }
+
+    container.addEventListener('mouseenter', handleMouseEnter)
+    container.addEventListener('mouseleave', handleMouseLeave)
+
+    // Start auto-scroll
+    animationFrameId = requestAnimationFrame(autoScroll)
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+      container.removeEventListener('mouseenter', handleMouseEnter)
+      container.removeEventListener('mouseleave', handleMouseLeave)
+    }
+  }, [teachers])
 
   const fetchTeachers = async () => {
+    setLoading(true)
     try {
-      const response = await getTeachers()
+      const response = await getTeachers(language)
       setTeachers(response.data)
     } catch (error) {
       console.error('Error fetching teachers:', error)
@@ -24,25 +78,41 @@ const Teachers = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#87CEEB]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1e3a8a]"></div>
       </div>
     )
   }
 
+  const heroVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
+
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="relative py-24 bg-gradient-to-br from-[#050b16] via-[#111c34] to-[#050b16] text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
+      <section className="relative min-h-[70vh] py-24 text-white overflow-hidden">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={heroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#030711]/90 via-[#051833]/70 to-[#03121d]/90" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(135,206,235,0.35),_transparent)]" />
         <motion.div
-          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">Our Teachers</h1>
+          <h1 className="font-display text-5xl md:text-7xl font-bold mb-6">
+            {t("teachers.heroTitle", "Our Teachers")}
+          </h1>
           <p className="text-xl md:text-2xl text-white/90">
-            Meet our dedicated and experienced faculty members
+            {t(
+              "teachers.heroSubtitle",
+              "Meet our dedicated and experienced faculty members"
+            )}
           </p>
         </motion.div>
       </section>
@@ -55,41 +125,95 @@ const Teachers = () => {
               <p className="text-gray-500 text-xl">No teachers found.</p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {teachers.map((teacher, index) => (
-                <motion.div
-                  key={teacher.id}
-                  className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                >
-                  <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#87CEEB] shadow-xl">
-                    {teacher.photo_url ? (
-                      <img
-                        src={`${MEDIA_BASE_URL}${teacher.photo_url}`}
-                        alt={teacher.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-[#7dd3fc] to-[#c084fc] flex items-center justify-center text-6xl">
-                        👤
-                      </div>
+            <div className="relative">
+              {/* Horizontal scrolling container with infinite scroll */}
+              <div 
+                ref={scrollContainerRef}
+                className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                }}
+              >
+                {/* First set of teachers */}
+                {teachers.map((teacher, index) => (
+                  <motion.div
+                    key={`teacher-${teacher.id}-1`}
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                  >
+                    <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#1e3a8a] shadow-xl">
+                      {teacher.photo_url ? (
+                        <img
+                          src={buildMediaUrl(teacher.photo_url)}
+                          alt={teacher.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextElementSibling?.style.display || (e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-6xl">👤</div>');
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-6xl">
+                          👤
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="font-display text-xl font-bold mb-2 text-gray-900">{teacher.name}</h3>
+                    {teacher.subjects && (
+                      <p className="text-[#1e3a8a] font-semibold mb-3">{teacher.subjects}</p>
                     )}
-                  </div>
-                  <h3 className="font-display text-xl font-bold mb-2 text-gray-900">{teacher.name}</h3>
-                  {teacher.subjects && (
-                    <p className="text-[#87CEEB] font-semibold mb-3">{teacher.subjects}</p>
-                  )}
-                  {teacher.qualifications && (
-                    <p className="text-gray-500 text-sm italic mb-3">{teacher.qualifications}</p>
-                  )}
-                  {teacher.bio && (
-                    <p className="text-gray-600 text-sm leading-relaxed">{teacher.bio}</p>
-                  )}
-                </motion.div>
-              ))}
+                    {teacher.qualifications && (
+                      <p className="text-gray-500 text-sm italic mb-3">{teacher.qualifications}</p>
+                    )}
+                    {teacher.bio && (
+                      <div className="text-gray-600 text-sm leading-relaxed line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio }} />
+                    )}
+                  </motion.div>
+                ))}
+                {/* Duplicate set for infinite scroll */}
+                {teachers.map((teacher, index) => (
+                  <motion.div
+                    key={`teacher-${teacher.id}-2`}
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                  >
+                    <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#1e3a8a] shadow-xl">
+                      {teacher.photo_url ? (
+                        <img
+                          src={buildMediaUrl(teacher.photo_url)}
+                          alt={teacher.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextElementSibling?.style.display || (e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-6xl">👤</div>');
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-6xl">
+                          👤
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="font-display text-xl font-bold mb-2 text-gray-900">{teacher.name}</h3>
+                    {teacher.subjects && (
+                      <p className="text-[#1e3a8a] font-semibold mb-3">{teacher.subjects}</p>
+                    )}
+                    {teacher.qualifications && (
+                      <p className="text-gray-500 text-sm italic mb-3">{teacher.qualifications}</p>
+                    )}
+                    {teacher.bio && (
+                      <div className="text-gray-600 text-sm leading-relaxed line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio }} />
+                    )}
+                  </motion.div>
+                ))}
+              </div>
             </div>
           )}
         </div>
