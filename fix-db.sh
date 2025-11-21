@@ -15,14 +15,14 @@ echo "Attempting to connect to PostgreSQL..."
 echo "If connection fails, you may need to use a different database (postgres or default_db)"
 echo ""
 
-psql 'postgresql://gen_user:Ac128Sp3@fdbfaab122c0842cf1db7eec.twc1.net:5432/postgres?sslmode=verify-full' <<EOF
-GRANT CONNECT ON DATABASE "db_Jomiweb" TO gen_user;
-GRANT USAGE ON SCHEMA public TO gen_user;
-GRANT CREATE ON SCHEMA public TO gen_user;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO gen_user;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO gen_user;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO gen_user;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO gen_user;
+psql 'postgresql://umed:umed2020@fdbfaab122c0842cf1db7eec.twc1.net:5432/postgres?sslmode=verify-full' <<EOF
+GRANT CONNECT ON DATABASE "db_Jomiweb" TO umed;
+GRANT USAGE ON SCHEMA public TO umed;
+GRANT CREATE ON SCHEMA public TO umed;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO umed;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO umed;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO umed;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO umed;
 \q
 EOF
 

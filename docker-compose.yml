@@ -9,8 +9,8 @@ services:
       DB_HOST: fdbfaab122c0842cf1db7eec.twc1.net
       DB_PORT: 5432
       DB_NAME: db_Jomiweb
-      DB_USER: gen_user
-      DB_PASSWORD: Ac128Sp3
+      DB_USER: umed
+      DB_PASSWORD: umed2020
       NODE_ENV: production
       JWT_SECRET: ${JWT_SECRET:-change-me}
       JWT_EXPIRE: 7d
