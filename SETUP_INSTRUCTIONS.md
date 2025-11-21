@@ -42,10 +42,12 @@ This will start:
    brew services start postgresql@15
    ```
 
-2. **Create Database**
-   ```bash
-   createdb school_db
-   ```
+2. **Database Configuration**
+   - Host: `fdbfaab122c0842cf1db7eec.twc1.net`
+   - Database: `db_Jomiweb`
+   - User: `umed`
+   - Password: `umed2020`
+   - Database is already set up on the remote server
 
 3. **Backend Setup**
    ```bash
@@ -93,11 +95,11 @@ This will start:
 ### Backend (.env)
 ```
 PORT=5001
-DB_HOST=localhost
+DB_HOST=fdbfaab122c0842cf1db7eec.twc1.net
 DB_PORT=5432
-DB_NAME=school_db
-DB_USER=postgres
-DB_PASSWORD=postgres
+DB_NAME=db_Jomiweb
+DB_USER=umed
+DB_PASSWORD=umed2020
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 JWT_EXPIRE=7d
 NODE_ENV=development

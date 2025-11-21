@@ -2,11 +2,11 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const poolConfig = {
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || 'fdbfaab122c0842cf1db7eec.twc1.net',
   port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'school_db',
-  user: process.env.DB_USER || process.env.USER || 'postgres',
-  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'db_Jomiweb',
+  user: process.env.DB_USER || 'umed',
+  password: process.env.DB_PASSWORD || 'umed2020',
 };
 
 // Add SSL configuration if PGSSLROOTCERT is set (for managed PostgreSQL)

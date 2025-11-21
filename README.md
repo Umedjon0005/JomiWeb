@@ -82,21 +82,22 @@ A complete, production-ready school website with a comprehensive admin panel, bu
    ```env
    PORT=5000
    DB_HOST=localhost
+   DB_HOST=fdbfaab122c0842cf1db7eec.twc1.net
    DB_PORT=5432
-   DB_NAME=school_db
-   DB_USER=postgres
-   DB_PASSWORD=postgres
+   DB_NAME=db_Jomiweb
+   DB_USER=umed
+   DB_PASSWORD=umed2020
    JWT_SECRET=your-super-secret-jwt-key-change-in-production
    JWT_EXPIRE=7d
    NODE_ENV=development
    UPLOAD_PATH=./uploads
    ```
 
-4. Make sure PostgreSQL is running and create the database:
-
-   ```bash
-   createdb school_db
-   ```
+4. Database is already configured:
+   - Host: `fdbfaab122c0842cf1db7eec.twc1.net`
+   - Database: `db_Jomiweb`
+   - User: `umed`
+   - Password: `umed2020`
 
 5. Run database migrations:
 
@@ -225,11 +226,11 @@ JomiWeb/
 
 ```env
 PORT=5000
-DB_HOST=postgres
+DB_HOST=fdbfaab122c0842cf1db7eec.twc1.net
 DB_PORT=5432
-DB_NAME=school_db
-DB_USER=postgres
-DB_PASSWORD=postgres
+DB_NAME=db_Jomiweb
+DB_USER=umed
+DB_PASSWORD=umed2020
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 JWT_EXPIRE=7d
 NODE_ENV=production

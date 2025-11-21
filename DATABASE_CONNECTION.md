@@ -8,20 +8,20 @@ Use these details to connect to your PostgreSQL database via pgAdmin:
 
 | Parameter | Value |
 |-----------|-------|
-| **Host** | `localhost` |
+| **Host** | `fdbfaab122c0842cf1db7eec.twc1.net` |
 | **Port** | `5432` |
-| **Database** | `school_db` |
-| **Username** | `umedjonsharipov` |
-| **Password** | *(empty - leave blank)* |
+| **Database** | `db_Jomiweb` |
+| **Username** | `umed` |
+| **Password** | `umed2020` |
 
 ### Quick Connection String
 
 ```
-Host: localhost
+Host: fdbfaab122c0842cf1db7eec.twc1.net
 Port: 5432
-Database: school_db
-Username: umedjonsharipov
-Password: (leave empty)
+Database: db_Jomiweb
+Username: umed
+Password: umed2020
 ```
 
 ### Steps to Connect in pgAdmin
@@ -33,12 +33,13 @@ Password: (leave empty)
    - Name: `School Website DB` (or any name you prefer)
 
 5. **In the "Connection" tab, enter:**
-   - Host name/address: `localhost`
+   - Host name/address: `fdbfaab122c0842cf1db7eec.twc1.net`
    - Port: `5432`
-   - Maintenance database: `school_db`
-   - Username: `umedjonsharipov`
-   - Password: *(leave empty)*
+   - Maintenance database: `db_Jomiweb`
+   - Username: `umed`
+   - Password: `umed2020`
    - ☑ Save password (optional)
+   - ☑ SSL mode: `require` or `verify-full`
 
 6. **Click "Save"**
 
@@ -47,7 +48,7 @@ Password: (leave empty)
 If you need to use a connection string:
 
 ```
-postgresql://umedjonsharipov@localhost:5432/school_db
+postgresql://umed:umed2020@fdbfaab122c0842cf1db7eec.twc1.net:5432/db_Jomiweb?sslmode=verify-full
 ```
 
 ### Database Tables
@@ -69,14 +70,17 @@ Once connected, you'll see these tables:
 You can test the connection using psql:
 
 ```bash
-psql -h localhost -p 5432 -U umedjonsharipov -d school_db
+export PGSSLROOTCERT=$HOME/.cloud-certs/root.crt
+psql 'postgresql://umed:umed2020@fdbfaab122c0842cf1db7eec.twc1.net:5432/db_Jomiweb?sslmode=verify-full'
 ```
 
 ### Notes
 
-- The database is running locally on your machine
-- No password is set for the database user
-- The database name is `school_db`
+- The database is running on a remote server (Timeweb Cloud)
+- Database user: `umed`
+- Database password: `umed2020`
+- Database name: `db_Jomiweb`
+- SSL connection required
 - Default PostgreSQL port is `5432`
 
 ### Troubleshooting
@@ -95,11 +99,13 @@ If you can't connect:
 
 3. **Verify database exists:**
    ```bash
-   psql -l | grep school_db
+   export PGSSLROOTCERT=$HOME/.cloud-certs/root.crt
+   psql 'postgresql://umed:umed2020@fdbfaab122c0842cf1db7eec.twc1.net:5432/postgres?sslmode=verify-full' -c "\l" | grep db_Jomiweb
    ```
 
 4. **Check if user exists:**
    ```bash
-   psql -d postgres -c "\du"
+   export PGSSLROOTCERT=$HOME/.cloud-certs/root.crt
+   psql 'postgresql://umed:umed2020@fdbfaab122c0842cf1db7eec.twc1.net:5432/postgres?sslmode=verify-full' -c "\du"
    ```
 
