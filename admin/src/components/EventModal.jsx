@@ -199,12 +199,37 @@ const EventModal = ({ event, onClose, onSave }) => {
             <label className="block text-xs font-medium mb-2 text-[#9ca3af] uppercase tracking-wider">Image</label>
             <input
               type="file"
-              accept="image/*"
+              accept="image/*,.png,.jpg,.jpeg,.gif,.webp,.svg"
               onChange={handleImageChange}
               className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-[#9ca3af] focus:outline-none focus:border-[#3b82f6] transition-colors"
             />
             {event?.image_url && !formData.image && (
-              <p className="mt-2 text-xs text-[#6b7280]">Current: {event.image_url}</p>
+              <div className="mt-3">
+                <p className="text-xs text-[#6b7280] mb-2">Current Image:</p>
+                <img
+                  src={(() => {
+                    if (!event.image_url) return "";
+                    if (event.image_url.startsWith("http")) return event.image_url;
+                    const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
+                    return `${mediaBase}${event.image_url.startsWith("/") ? event.image_url : `/${event.image_url}`}`;
+                  })()}
+                  alt="Current"
+                  className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+            {formData.image && (
+              <div className="mt-3">
+                <p className="text-xs text-[#6b7280] mb-2">New Image Preview:</p>
+                <img
+                  src={URL.createObjectURL(formData.image)}
+                  alt="Preview"
+                  className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
+                />
+              </div>
             )}
           </div>
           

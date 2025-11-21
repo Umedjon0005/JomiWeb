@@ -199,7 +199,7 @@ const PhotoModal = ({ photo, onClose, onSave }) => {
               </label>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/*,.png,.jpg,.jpeg,.gif,.webp,.svg"
                 onChange={handleImageChange}
                 required={!photo}
                 className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-[#9ca3af] focus:outline-none focus:border-[#3b82f6] transition-colors"

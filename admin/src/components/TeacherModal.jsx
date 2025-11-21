@@ -202,7 +202,7 @@ const TeacherModal = ({ teacher, onClose, onSave }) => {
             <label className="block text-xs font-medium mb-2 text-[#9ca3af] uppercase tracking-wider">Photo</label>
             <input
               type="file"
-              accept="image/*"
+              accept="image/*,.png,.jpg,.jpeg,.gif,.webp,.svg"
               onChange={handlePhotoChange}
               className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-[#9ca3af] focus:outline-none focus:border-[#3b82f6] transition-colors"
             />

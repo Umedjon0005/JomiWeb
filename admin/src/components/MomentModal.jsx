@@ -15,6 +15,7 @@ const MomentModal = ({ moment, onClose, onSave }) => {
   });
   const [loading, setLoading] = useState(false);
   const [activeLang, setActiveLang] = useState("en");
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     if (moment) {
@@ -28,6 +29,13 @@ const MomentModal = ({ moment, onClose, onSave }) => {
         sort_order: moment.sort_order || 0,
         image: null,
       });
+      const buildImageUrl = (path) => {
+        if (!path) return null;
+        if (path.startsWith("http")) return path;
+        const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
+        return `${mediaBase}${path.startsWith("/") ? path : `/${path}`}`;
+      };
+      setPreview(moment.image_url ? buildImageUrl(moment.image_url) : null);
     } else {
       setFormData({
         title: "",
@@ -39,6 +47,7 @@ const MomentModal = ({ moment, onClose, onSave }) => {
         sort_order: 0,
         image: null,
       });
+      setPreview(null);
     }
   }, [moment]);
 
@@ -51,10 +60,18 @@ const MomentModal = ({ moment, onClose, onSave }) => {
   };
 
   const handleImageChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      image: e.target.files[0],
-    }));
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        image: file,
+      }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -175,14 +192,24 @@ const MomentModal = ({ moment, onClose, onSave }) => {
               </label>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/*,.png,.jpg,.jpeg,.gif,.webp,.svg"
                 onChange={handleImageChange}
                 className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-[#9ca3af] focus:outline-none focus:border-[#3b82f6] transition-colors"
               />
-              {moment?.image_url && !formData.image && (
-                <p className="mt-2 text-xs text-[#6b7280]">
-                  Current: {moment.image_url}
-                </p>
+              {preview && (
+                <div className="mt-3">
+                  <p className="text-xs text-[#6b7280] mb-2">
+                    {formData.image ? "New Image Preview:" : "Current Image:"}
+                  </p>
+                  <img
+                    src={preview}
+                    alt={formData.image ? "Preview" : "Current"}
+                    className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
               )}
             </div>
           </div>
