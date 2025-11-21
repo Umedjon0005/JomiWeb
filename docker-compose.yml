@@ -20,7 +20,7 @@ services:
       - ./backend/uploads:/app/uploads
     ports:
       - "5000:5000"
-    command: sh -c "sleep 5 && npm run migrate && npm start"
+    command: sh -c "sleep 5 && npm run migrate || echo '⚠️  Migration failed - check database permissions. Starting server anyway...' && npm start"
     networks:
       - school_network
 

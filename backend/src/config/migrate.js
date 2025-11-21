@@ -229,7 +229,20 @@ const createTables = async () => {
     console.log("Database tables created successfully");
     process.exit(0);
   } catch (error) {
-    console.error("Error creating tables:", error);
+    // Check if it's a permission error
+    if (error.code === '42501' || error.message?.includes('permission denied')) {
+      console.error("❌ Database permission error:");
+      console.error("   User does not have CONNECT privilege on database.");
+      console.error("   Please grant permissions:");
+      console.error("   GRANT CONNECT ON DATABASE \"db_Jomiweb\" TO gen_user;");
+      console.error("   GRANT USAGE, CREATE ON SCHEMA public TO gen_user;");
+      console.error("   GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO gen_user;");
+      console.error("   GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO gen_user;");
+      console.error("   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO gen_user;");
+      console.error("   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO gen_user;");
+    } else {
+      console.error("Error creating tables:", error.message || error);
+    }
     process.exit(1);
   }
 };
