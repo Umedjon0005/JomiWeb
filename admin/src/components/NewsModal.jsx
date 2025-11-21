@@ -3,6 +3,7 @@ import { createNews, updateNews } from '../services/api'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { SUPPORTED_LANGS } from '../constants/languages'
+import { formatDateForInput, normalizeLanguageFields, buildImageUrl } from '../utils/formHelpers'
 
 const NewsModal = ({ news, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -20,14 +21,17 @@ const NewsModal = ({ news, onClose, onSave }) => {
 
   useEffect(() => {
     if (news) {
+      // Normalize all language fields and format date
+      const normalized = normalizeLanguageFields(news, ['title', 'content']);
+      
       setFormData({
-        title: news.title || '',
-        title_ru: news.title_ru || '',
-        title_tj: news.title_tj || '',
-        content: news.content || '',
-        content_ru: news.content_ru || '',
-        content_tj: news.content_tj || '',
-        publish_date: news.publish_date || '',
+        title: normalized.title || '',
+        title_ru: normalized.title_ru || '',
+        title_tj: normalized.title_tj || '',
+        content: normalized.content || '',
+        content_ru: normalized.content_ru || '',
+        content_tj: normalized.content_tj || '',
+        publish_date: formatDateForInput(news.publish_date),
         image: null
       })
     } else {
@@ -186,12 +190,7 @@ const NewsModal = ({ news, onClose, onSave }) => {
               <div className="mt-3">
                 <p className="text-xs text-[#6b7280] mb-2">Current Image:</p>
                 <img
-                  src={(() => {
-                    if (!news.image_url) return "";
-                    if (news.image_url.startsWith("http")) return news.image_url;
-                    const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
-                    return `${mediaBase}${news.image_url.startsWith("/") ? news.image_url : `/${news.image_url}`}`;
-                  })()}
+                  src={buildImageUrl(news.image_url)}
                   alt="Current"
                   className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
                   onError={(e) => {

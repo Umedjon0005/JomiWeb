@@ -3,6 +3,7 @@ import { createTeacher, updateTeacher } from '../services/api'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { SUPPORTED_LANGS } from '../constants/languages'
+import { normalizeLanguageFields, buildImageUrl } from '../utils/formHelpers'
 
 const TeacherModal = ({ teacher, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -25,19 +26,22 @@ const TeacherModal = ({ teacher, onClose, onSave }) => {
 
   useEffect(() => {
     if (teacher) {
+      // Normalize all language fields
+      const normalized = normalizeLanguageFields(teacher, ['name', 'bio', 'qualifications', 'subjects']);
+      
       setFormData({
-        name: teacher.name || '',
-        name_ru: teacher.name_ru || '',
-        name_tj: teacher.name_tj || '',
-        bio: teacher.bio || '',
-        bio_ru: teacher.bio_ru || '',
-        bio_tj: teacher.bio_tj || '',
-        qualifications: teacher.qualifications || '',
-        qualifications_ru: teacher.qualifications_ru || '',
-        qualifications_tj: teacher.qualifications_tj || '',
-        subjects: teacher.subjects || '',
-        subjects_ru: teacher.subjects_ru || '',
-        subjects_tj: teacher.subjects_tj || '',
+        name: normalized.name || '',
+        name_ru: normalized.name_ru || '',
+        name_tj: normalized.name_tj || '',
+        bio: normalized.bio || '',
+        bio_ru: normalized.bio_ru || '',
+        bio_tj: normalized.bio_tj || '',
+        qualifications: normalized.qualifications || '',
+        qualifications_ru: normalized.qualifications_ru || '',
+        qualifications_tj: normalized.qualifications_tj || '',
+        subjects: normalized.subjects || '',
+        subjects_ru: normalized.subjects_ru || '',
+        subjects_tj: normalized.subjects_tj || '',
         photo: null
       })
     } else {
@@ -210,12 +214,7 @@ const TeacherModal = ({ teacher, onClose, onSave }) => {
               <div className="mt-3">
                 <p className="text-xs text-[#6b7280] mb-2">Current Photo:</p>
                 <img
-                  src={(() => {
-                    if (!teacher.photo_url) return "";
-                    if (teacher.photo_url.startsWith("http")) return teacher.photo_url;
-                    const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
-                    return `${mediaBase}${teacher.photo_url.startsWith("/") ? teacher.photo_url : `/${teacher.photo_url}`}`;
-                  })()}
+                  src={buildImageUrl(teacher.photo_url)}
                   alt={teacher.name}
                   className="w-32 h-32 rounded-lg object-cover border-2 border-[#374151]"
                   onError={(e) => {

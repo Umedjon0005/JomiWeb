@@ -3,6 +3,7 @@ import { createOlympiad, updateOlympiad } from "../services/api";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { SUPPORTED_LANGS } from "../constants/languages";
+import { formatDateForInput, normalizeLanguageFields, buildImageUrl } from "../utils/formHelpers";
 
 const OlympiadModal = ({ olympiad, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -31,24 +32,27 @@ const OlympiadModal = ({ olympiad, onClose, onSave }) => {
 
   useEffect(() => {
     if (olympiad) {
+      // Normalize all language fields and format date
+      const normalized = normalizeLanguageFields(olympiad, ['title', 'description', 'location', 'winner_name', 'project_name']);
+      
       setFormData({
-        title: olympiad.title || "",
-        title_ru: olympiad.title_ru || "",
-        title_tj: olympiad.title_tj || "",
-        description: olympiad.description || "",
-        description_ru: olympiad.description_ru || "",
-        description_tj: olympiad.description_tj || "",
-        olympiad_date: olympiad.olympiad_date || "",
-        location: olympiad.location || "",
-        location_ru: olympiad.location_ru || "",
-        location_tj: olympiad.location_tj || "",
+        title: normalized.title || "",
+        title_ru: normalized.title_ru || "",
+        title_tj: normalized.title_tj || "",
+        description: normalized.description || "",
+        description_ru: normalized.description_ru || "",
+        description_tj: normalized.description_tj || "",
+        olympiad_date: formatDateForInput(olympiad.olympiad_date),
+        location: normalized.location || "",
+        location_ru: normalized.location_ru || "",
+        location_tj: normalized.location_tj || "",
         reference_url: olympiad.reference_url || "",
-        winner_name: olympiad.winner_name || "",
-        winner_name_ru: olympiad.winner_name_ru || "",
-        winner_name_tj: olympiad.winner_name_tj || "",
-        project_name: olympiad.project_name || "",
-        project_name_ru: olympiad.project_name_ru || "",
-        project_name_tj: olympiad.project_name_tj || "",
+        winner_name: normalized.winner_name || "",
+        winner_name_ru: normalized.winner_name_ru || "",
+        winner_name_tj: normalized.winner_name_tj || "",
+        project_name: normalized.project_name || "",
+        project_name_ru: normalized.project_name_ru || "",
+        project_name_tj: normalized.project_name_tj || "",
         image: null,
         project_image: null,
       });
@@ -304,12 +308,7 @@ const OlympiadModal = ({ olympiad, onClose, onSave }) => {
                 <div className="mt-3">
                   <p className="text-xs text-[#6b7280] mb-2">Current Image:</p>
                   <img
-                    src={(() => {
-                      if (!olympiad.image_url) return "";
-                      if (olympiad.image_url.startsWith("http")) return olympiad.image_url;
-                      const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
-                      return `${mediaBase}${olympiad.image_url.startsWith("/") ? olympiad.image_url : `/${olympiad.image_url}`}`;
-                    })()}
+                    src={buildImageUrl(olympiad.image_url)}
                     alt="Current"
                     className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
                     onError={(e) => {
@@ -344,12 +343,7 @@ const OlympiadModal = ({ olympiad, onClose, onSave }) => {
                 <div className="mt-3">
                   <p className="text-xs text-[#6b7280] mb-2">Current Image:</p>
                   <img
-                    src={(() => {
-                      if (!olympiad.project_image_url) return "";
-                      if (olympiad.project_image_url.startsWith("http")) return olympiad.project_image_url;
-                      const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
-                      return `${mediaBase}${olympiad.project_image_url.startsWith("/") ? olympiad.project_image_url : `/${olympiad.project_image_url}`}`;
-                    })()}
+                    src={buildImageUrl(olympiad.project_image_url)}
                     alt="Current"
                     className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
                     onError={(e) => {

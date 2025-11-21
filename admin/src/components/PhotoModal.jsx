@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
 import { createPhoto, updatePhoto } from "../services/api";
 import { SUPPORTED_LANGS } from "../constants/languages";
-
-const buildImageUrl = (path) => {
-  if (!path) return null;
-  if (path.startsWith("http")) return path;
-  // Use VITE_MEDIA_URL or default to server IP
-  const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
-  return `${mediaBase}${path.startsWith("/") ? path : `/${path}`}`;
-};
+import { normalizeLanguageFields, buildImageUrl } from "../utils/formHelpers";
 
 const PhotoModal = ({ photo, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -27,13 +20,16 @@ const PhotoModal = ({ photo, onClose, onSave }) => {
 
   useEffect(() => {
     if (photo) {
+      // Normalize all language fields
+      const normalized = normalizeLanguageFields(photo, ['title', 'description']);
+      
       setFormData({
-        title: photo.title || "",
-        title_ru: photo.title_ru || "",
-        title_tj: photo.title_tj || "",
-        description: photo.description || "",
-        description_ru: photo.description_ru || "",
-        description_tj: photo.description_tj || "",
+        title: normalized.title || "",
+        title_ru: normalized.title_ru || "",
+        title_tj: normalized.title_tj || "",
+        description: normalized.description || "",
+        description_ru: normalized.description_ru || "",
+        description_tj: normalized.description_tj || "",
         sort_order: photo.sort_order || 0,
         image: null,
       });

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createMoment, updateMoment } from "../services/api";
 import { SUPPORTED_LANGS } from "../constants/languages";
+import { normalizeLanguageFields, buildImageUrl } from "../utils/formHelpers";
 
 const MomentModal = ({ moment, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -19,22 +20,19 @@ const MomentModal = ({ moment, onClose, onSave }) => {
 
   useEffect(() => {
     if (moment) {
+      // Normalize all language fields
+      const normalized = normalizeLanguageFields(moment, ['title', 'caption']);
+      
       setFormData({
-        title: moment.title || "",
-        title_ru: moment.title_ru || "",
-        title_tj: moment.title_tj || "",
-        caption: moment.caption || "",
-        caption_ru: moment.caption_ru || "",
-        caption_tj: moment.caption_tj || "",
+        title: normalized.title || "",
+        title_ru: normalized.title_ru || "",
+        title_tj: normalized.title_tj || "",
+        caption: normalized.caption || "",
+        caption_ru: normalized.caption_ru || "",
+        caption_tj: normalized.caption_tj || "",
         sort_order: moment.sort_order || 0,
         image: null,
       });
-      const buildImageUrl = (path) => {
-        if (!path) return null;
-        if (path.startsWith("http")) return path;
-        const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
-        return `${mediaBase}${path.startsWith("/") ? path : `/${path}`}`;
-      };
       setPreview(moment.image_url ? buildImageUrl(moment.image_url) : null);
     } else {
       setFormData({

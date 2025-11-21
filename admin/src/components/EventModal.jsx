@@ -3,6 +3,7 @@ import { createEvent, updateEvent } from '../services/api'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { SUPPORTED_LANGS } from '../constants/languages'
+import { formatDateForInput, normalizeLanguageFields } from '../utils/formHelpers'
 
 const EventModal = ({ event, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -23,17 +24,20 @@ const EventModal = ({ event, onClose, onSave }) => {
 
   useEffect(() => {
     if (event) {
+      // Normalize all language fields and format date
+      const normalized = normalizeLanguageFields(event, ['title', 'description', 'location']);
+      
       setFormData({
-        title: event.title || '',
-        title_ru: event.title_ru || '',
-        title_tj: event.title_tj || '',
-        description: event.description || '',
-        description_ru: event.description_ru || '',
-        description_tj: event.description_tj || '',
-        event_date: event.event_date || '',
-        location: event.location || '',
-        location_ru: event.location_ru || '',
-        location_tj: event.location_tj || '',
+        title: normalized.title || '',
+        title_ru: normalized.title_ru || '',
+        title_tj: normalized.title_tj || '',
+        description: normalized.description || '',
+        description_ru: normalized.description_ru || '',
+        description_tj: normalized.description_tj || '',
+        event_date: formatDateForInput(event.event_date),
+        location: normalized.location || '',
+        location_ru: normalized.location_ru || '',
+        location_tj: normalized.location_tj || '',
         image: null
       })
     } else {
@@ -207,12 +211,7 @@ const EventModal = ({ event, onClose, onSave }) => {
               <div className="mt-3">
                 <p className="text-xs text-[#6b7280] mb-2">Current Image:</p>
                 <img
-                  src={(() => {
-                    if (!event.image_url) return "";
-                    if (event.image_url.startsWith("http")) return event.image_url;
-                    const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
-                    return `${mediaBase}${event.image_url.startsWith("/") ? event.image_url : `/${event.image_url}`}`;
-                  })()}
+                  src={buildImageUrl(event.image_url)}
                   alt="Current"
                   className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
                   onError={(e) => {
