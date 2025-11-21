@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import { getPhotos, deletePhoto } from "../services/api";
 import PhotoModal from "../components/PhotoModal";
 
-const MEDIA_BASE_URL =
-  import.meta.env.VITE_MEDIA_URL || "http://localhost:5001";
-
 const buildImageUrl = (path) => {
   if (!path) return null;
   if (path.startsWith("http")) return path;
-  return `${MEDIA_BASE_URL}${path}`;
+  // Use relative URL if VITE_MEDIA_URL is not set (nginx will proxy /uploads)
+  const mediaBase = import.meta.env.VITE_MEDIA_URL || "";
+  if (!mediaBase) {
+    // Return relative path - nginx will proxy /uploads to backend
+    return path.startsWith("/") ? path : `/${path}`;
+  }
+  return `${mediaBase}${path}`;
 };
 
 const PhotosManagement = () => {

@@ -1,8 +1,18 @@
 import axios from "axios";
 import { getAuthHeader } from "../utils/auth";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+// Use relative URL if VITE_API_URL is set to "/api" (for nginx proxy)
+// Otherwise use the full URL or default to localhost:5000
+const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl === "/api" || envUrl?.startsWith("/")) {
+    // Relative URL - nginx will proxy to backend
+    return envUrl;
+  }
+  return envUrl || "http://localhost:5000/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
