@@ -29,10 +29,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: /api
+        VITE_API_URL: http://194.187.122.145:5000/api
+        VITE_MEDIA_URL: http://194.187.122.145:5000
     container_name: school_frontend
-    environment:
-      BACKEND_HOST: backend:5000
     ports:
       - "8834:80"
     depends_on:
@@ -45,10 +44,9 @@ services:
       context: ./admin
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: /api
+        VITE_API_URL: http://194.187.122.145:5000/api
+        VITE_MEDIA_URL: http://194.187.122.145:5000
     container_name: school_admin
-    environment:
-      BACKEND_HOST: backend:5000
     ports:
       - "8833:80"
     depends_on:

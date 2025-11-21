@@ -1,33 +1,10 @@
 import axios from "axios";
 
-// Use relative URL if VITE_API_URL is set to "/api" (for nginx proxy)
-// Otherwise use the full URL or default to localhost:5000
-const getApiBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
-  if (envUrl === "/api" || envUrl?.startsWith("/")) {
-    // Relative URL - nginx will proxy to backend
-    return envUrl;
-  }
-  return envUrl || "http://localhost:5000/api";
-};
+// Use VITE_API_URL from environment or default to server IP
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://194.187.122.145:5000/api";
 
-const API_BASE_URL = getApiBaseUrl();
-
-// For media URLs, use relative path if API is relative, otherwise construct full URL
-const getMediaBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_MEDIA_URL;
-  if (envUrl) {
-    return envUrl;
-  }
-  // If using relative API URL, media should also be relative
-  if (API_BASE_URL.startsWith("/")) {
-    return ""; // Will be handled by nginx proxy
-  }
-  // Otherwise use the same base as API
-  return API_BASE_URL.replace("/api", "");
-};
-
-export const MEDIA_BASE_URL = getMediaBaseUrl();
+// Use VITE_MEDIA_URL from environment or default to server IP
+export const MEDIA_BASE_URL = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
 const LANGUAGE_STORAGE_KEY = "siteLanguage";
 
 const normalizeLang = (value) => {

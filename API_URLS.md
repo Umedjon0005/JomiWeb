@@ -27,7 +27,7 @@
 ### Correct curl command (Backend on port 5000):
 ```bash
 curl -X 'POST' \
-  'http://localhost:5000/api/auth/login' \
+  'http://194.187.122.145:5000/api/auth/login' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -39,7 +39,7 @@ curl -X 'POST' \
 ### Or test through nginx proxy (Frontend):
 ```bash
 curl -X 'POST' \
-  'http://localhost:8834/api/auth/login' \
+  'http://194.187.122.145:8834/api/auth/login' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -51,7 +51,7 @@ curl -X 'POST' \
 ### Or test through nginx proxy (Admin):
 ```bash
 curl -X 'POST' \
-  'http://localhost:8833/api/auth/login' \
+  'http://194.187.122.145:8833/api/auth/login' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{

@@ -90,9 +90,7 @@ docker run -d \
   school-admin:latest
 
 echo -e "\n${GREEN}=== All Services Started! ===${NC}\n"
-echo -e "Backend:  http://localhost:$BACKEND_PORT"
-echo -e "Frontend: http://localhost:$FRONTEND_PORT"
-echo -e "Admin:    http://localhost:$ADMIN_PORT"
-echo -e "\n${YELLOW}Note: If running on Linux, you may need to set BACKEND_HOST to your server's IP address${NC}"
-echo -e "${YELLOW}Example: BACKEND_HOST=192.168.0.4:5000 ./build-and-run-separate.sh${NC}"
+echo -e "Backend:  http://194.187.122.145:$BACKEND_PORT"
+echo -e "Frontend: http://194.187.122.145:$FRONTEND_PORT"
+echo -e "Admin:    http://194.187.122.145:$ADMIN_PORT"
 

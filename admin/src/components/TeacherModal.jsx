@@ -211,11 +211,10 @@ const TeacherModal = ({ teacher, onClose, onSave }) => {
                 <p className="text-xs text-[#6b7280] mb-2">Current Photo:</p>
                 <img
                   src={(() => {
-                    const mediaBase = import.meta.env.VITE_MEDIA_URL || "";
-                    if (!mediaBase && teacher.photo_url) {
-                      return teacher.photo_url.startsWith("/") ? teacher.photo_url : `/${teacher.photo_url}`;
-                    }
-                    return `${mediaBase}${teacher.photo_url}`;
+                    if (!teacher.photo_url) return "";
+                    if (teacher.photo_url.startsWith("http")) return teacher.photo_url;
+                    const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
+                    return `${mediaBase}${teacher.photo_url.startsWith("/") ? teacher.photo_url : `/${teacher.photo_url}`}`;
                   })()}
                   alt={teacher.name}
                   className="w-32 h-32 rounded-lg object-cover border-2 border-[#374151]"

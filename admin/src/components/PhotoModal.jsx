@@ -5,13 +5,9 @@ import { SUPPORTED_LANGS } from "../constants/languages";
 const buildImageUrl = (path) => {
   if (!path) return null;
   if (path.startsWith("http")) return path;
-  // Use relative URL if VITE_MEDIA_URL is not set (nginx will proxy /uploads)
-  const mediaBase = import.meta.env.VITE_MEDIA_URL || "";
-  if (!mediaBase) {
-    // Return relative path - nginx will proxy /uploads to backend
-    return path.startsWith("/") ? path : `/${path}`;
-  }
-  return `${mediaBase}${path}`;
+  // Use VITE_MEDIA_URL or default to server IP
+  const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
+  return `${mediaBase}${path.startsWith("/") ? path : `/${path}`}`;
 };
 
 const PhotoModal = ({ photo, onClose, onSave }) => {
