@@ -58,8 +58,8 @@ docker run -d \
   -e DB_HOST=fdbfaab122c0842cf1db7eec.twc1.net \
   -e DB_PORT=5432 \
   -e DB_NAME=db_Jomiweb \
-  -e DB_USER=gen_user \
-  -e DB_PASSWORD=Ac128Sp3 \
+  -e DB_USER=umed \
+  -e DB_PASSWORD=umed2020 \
   -e NODE_ENV=production \
   -e JWT_SECRET="${JWT_SECRET:-change-me-in-production}" \
   -e JWT_EXPIRE=7d \
