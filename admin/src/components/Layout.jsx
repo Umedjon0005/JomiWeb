@@ -1,6 +1,6 @@
-import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
-import { removeToken } from "../utils/auth";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import logo from "../logo.png";
+import { removeToken } from "../utils/auth";
 
 const Layout = ({ setIsAuthenticated }) => {
   const location = useLocation();
