@@ -33,7 +33,7 @@ services:
         VITE_MEDIA_URL: http://194.187.122.145:5000
     container_name: school_frontend
     ports:
-      - "80:80"
+      - "8834:80"
     depends_on:
       - backend
     networks:
