@@ -7,10 +7,15 @@ import { useTranslation } from "../hooks/useTranslation";
 const Welcome = () => {
   const [showContent, setShowContent] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [videoSrc, setVideoSrc] = useState(welcomeVideo);
+  const [videoError, setVideoError] = useState(false);
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const hasScrolled = useRef(false);
   const { t } = useTranslation();
+  
+  // Fallback video URL
+  const fallbackVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
 
   useEffect(() => {
     // Show content after video loads
@@ -125,11 +130,28 @@ const Welcome = () => {
               {/* Video Background */}
               <motion.video
                 className="absolute inset-0 w-full h-full object-cover"
-                src={welcomeVideo}
+                src={videoSrc}
                 autoPlay
                 muted
                 loop
                 playsInline
+                preload="auto"
+                onError={(e) => {
+                  console.error("Video failed to load from:", videoSrc);
+                  if (!videoError && videoSrc === welcomeVideo) {
+                    // Try fallback video
+                    console.log("Trying fallback video...");
+                    setVideoError(true);
+                    setVideoSrc(fallbackVideo);
+                  } else {
+                    // Hide video if both fail
+                    console.error("All video sources failed to load");
+                    e.target.style.display = 'none';
+                  }
+                }}
+                onLoadedData={() => {
+                  console.log("Video loaded successfully from:", videoSrc);
+                }}
                 initial={{ scale: 1 }}
                 animate={{ scale: isExiting ? 1.2 : 1 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}

@@ -12,6 +12,20 @@ export default defineConfig({
         changeOrigin: true
       }
     }
-  }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          // Ensure video files are properly named and included
+          if (assetInfo.name && assetInfo.name.endsWith('.mp4')) {
+            return 'assets/[name][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        }
+      }
+    }
+  },
+  assetsInclude: ['**/*.mp4']
 })
 
