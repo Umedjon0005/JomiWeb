@@ -73,6 +73,28 @@ app.use("/api/contact", require("./routes/contactRoutes"));
 app.use("/api/moments", require("./routes/momentsRoutes"));
 app.use("/api/photos", require("./routes/photosRoutes"));
 
+// Ensure contact_requests table exists on startup
+(async () => {
+  try {
+    const pool = require("./config/database");
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS contact_requests (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        subject VARCHAR(500),
+        message TEXT NOT NULL,
+        language VARCHAR(10) DEFAULT 'en',
+        read_status BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Contact requests table verified/created');
+  } catch (error) {
+    console.error('⚠️  Could not verify contact_requests table:', error.message);
+  }
+})();
+
 /**
  * @swagger
  * /api/health:
