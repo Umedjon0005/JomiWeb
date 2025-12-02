@@ -51,7 +51,7 @@ const Events = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#87CEEB]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -97,7 +97,7 @@ const Events = () => {
                 onClick={() => setFilter(f)}
                 className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 capitalize ${
                   filter === f
-                    ? 'bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white shadow-lg'
+                    ? 'bg-gray-900 text-white shadow-lg'
                     : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
                 }`}
               >

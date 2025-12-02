@@ -28,7 +28,7 @@ const About = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#87CEEB]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -37,12 +37,12 @@ const About = () => {
   const vision = aboutContent.find(item => item.section_key === 'vision')
   const history = aboutContent.find(item => item.section_key === 'history')
 
-  const values = [
-    { icon: '🎯', title: 'Excellence', desc: 'Striving for the highest standards in everything we do' },
-    { icon: '🤝', title: 'Integrity', desc: 'Building trust through honesty and transparency' },
-    { icon: '💡', title: 'Innovation', desc: 'Embracing new ideas and creative solutions' },
-    { icon: '❤️', title: 'Compassion', desc: 'Caring for each individual in our community' }
-  ]
+  const values = t("about.valuesSection.items", [
+    { icon: "🌍", title: "Global Excellence", desc: "English-medium education preparing students for international success" },
+    { icon: "🏠", title: "Boarding Community", desc: "Nurturing dormitory environment fostering independence and lifelong friendships" },
+    { icon: "🏆", title: "Olympiad Excellence", desc: "Annual participation in international competitions across multiple countries" },
+    { icon: "🤝", title: "Family Engagement", desc: "Collaborative activities with families from around the world creating global connections" },
+  ])
 
   const heroVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
 
@@ -89,7 +89,7 @@ const About = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-[#87CEEB]">
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                 {mission.title}
               </h2>
               <div className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: mission.content }} />
@@ -104,7 +104,7 @@ const About = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-[#7dd3fc]">
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                 {vision.title}
               </h2>
               <div className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: vision.content }} />
@@ -119,7 +119,7 @@ const About = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                 {history.title}
               </h2>
               <div className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: history.content }} />
@@ -132,8 +132,8 @@ const About = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
-              Our Core Values
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+              {t("about.valuesSection.title", "Our Core Values")}
             </h2>
           </div>
           

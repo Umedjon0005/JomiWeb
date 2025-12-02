@@ -24,8 +24,23 @@ export const normalizeLanguageFields = (data, fields) => {
 // Helper function to build image URL
 export const buildImageUrl = (path) => {
   if (!path) return null;
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  
+  // If already a full URL, return as is
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+  
+  // Normalize path: remove leading/trailing whitespace, ensure it starts with /
+  const trimmedPath = path.trim();
+  const normalizedPath = trimmedPath.startsWith('/') ? trimmedPath : `/${trimmedPath}`;
+  
+  // Use VITE_MEDIA_URL or default to server IP
   const mediaBase = import.meta.env.VITE_MEDIA_URL || 'http://194.187.122.145:5000';
-  return `${mediaBase}${path.startsWith('/') ? path : `/${path}`}`;
+  
+  // Ensure mediaBase doesn't end with / and path starts with /
+  const baseUrl = mediaBase.endsWith('/') ? mediaBase.slice(0, -1) : mediaBase;
+  
+  return `${baseUrl}${normalizedPath}`;
 };
+
 

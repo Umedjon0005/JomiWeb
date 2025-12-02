@@ -46,10 +46,10 @@ const Navbar = () => {
             <img 
               src={logo} 
               alt="School Logo" 
-              className="h-10 w-10 object-contain group-hover:scale-110 transition-transform duration-300"
+              className="h-16 w-16 object-contain group-hover:scale-110 transition-transform duration-300"
             />
-            <span className="font-display text-2xl font-bold bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent">
-              Abdurahmoni Jomi
+            <span className="font-display text-xl font-bold text-gray-900">
+              {t("school.name", "Abdurahmoni Jomi Private School")}
             </span>
           </Link>
 
@@ -61,14 +61,14 @@ const Navbar = () => {
                   to={link.path}
                   className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
                     location.pathname === link.path
-                      ? "text-[#1e3a8a]"
-                      : "text-gray-700 hover:text-[#1e3a8a]"
+                      ? "text-gray-900"
+                      : "text-gray-700 hover:text-gray-900"
                   }`}
                 >
                   {link.label}
                   {location.pathname === link.path && (
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af]"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900"
                       layoutId="underline"
                     />
                   )}
@@ -83,8 +83,8 @@ const Navbar = () => {
                   onClick={() => setLanguage(lang.key)}
                   className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors ${
                     language === lang.key
-                      ? "bg-white text-[#1e3a8a] shadow"
-                      : "text-gray-500 hover:text-[#1e3a8a]"
+                      ? "bg-white text-gray-900 shadow"
+                      : "text-gray-500 hover:text-gray-900"
                   }`}
                 >
                   {lang.label}
@@ -128,7 +128,7 @@ const Navbar = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   location.pathname === link.path
-                    ? "text-[#87CEEB] bg-[#87CEEB]/10"
+                    ? "text-gray-900 bg-gray-100"
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
@@ -145,7 +145,7 @@ const Navbar = () => {
                   }}
                   className={`flex-1 px-3 py-2 text-xs font-semibold rounded-md border ${
                     language === lang.key
-                      ? "bg-[#1e3a8a] text-white border-transparent"
+                      ? "bg-gray-900 text-white border-transparent"
                       : "text-gray-700 border-gray-200"
                   }`}
                 >

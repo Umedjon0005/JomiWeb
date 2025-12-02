@@ -23,11 +23,15 @@ const fileFilter = (req, file, cb) => {
     return cb(null, false);
   }
 
+  // Accept all image MIME types
   const isImageMime = file.mimetype && file.mimetype.startsWith('image/');
-  const allowedExt = /\.(jpe?g|png|gif|webp|svg|heic|heif)$/i.test(
+  
+  // Accept common image extensions (including less common ones)
+  const allowedExt = /\.(jpe?g|png|gif|webp|svg|heic|heif|bmp|tiff|tif|ico|avif|jfif)$/i.test(
     path.extname(file.originalname)
   );
 
+  // Accept if it's an image MIME type OR has an image extension
   if (isImageMime || allowedExt) {
     return cb(null, true);
   }
@@ -37,7 +41,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB - increased for higher quality images
   fileFilter: fileFilter
 });
 

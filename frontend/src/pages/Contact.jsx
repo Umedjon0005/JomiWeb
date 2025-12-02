@@ -95,7 +95,7 @@ const Contact = () => {
                   { icon: '🕒', title: t("contact.contactInfo.officeHours", "Office Hours"), content: 'Monday - Friday: 8:00 AM - 5:00 PM' }
                 ].map((item, index) => (
                   <div key={index} className="flex gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-2xl flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center text-2xl flex-shrink-0">
                       {item.icon}
                     </div>
                     <div>
@@ -117,7 +117,7 @@ const Contact = () => {
               transition={{ duration: 0.6 }}
             >
               {submitted && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white rounded-xl text-center font-semibold">
+                <div className="mb-6 p-4 bg-gray-900 text-white rounded-xl text-center font-semibold">
                   {t("contact.form.success", "✓ Thank you! Your message has been sent successfully.")}
                 </div>
               )}
@@ -133,7 +133,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1e3a8a] transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors"
                   />
                 </div>
 
@@ -147,7 +147,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1e3a8a] transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors"
                   />
                 </div>
 
@@ -161,7 +161,7 @@ const Contact = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1e3a8a] transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors"
                   />
                 </div>
 
@@ -175,14 +175,14 @@ const Contact = () => {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#87CEEB] transition-colors resize-none"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-gray-900 transition-colors resize-none"
                   ></textarea>
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full px-8 py-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white font-semibold rounded-xl hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-8 py-4 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? t("contact.form.sending", "Sending...") : t("contact.form.sendMessage", "Send Message")}
                 </button>

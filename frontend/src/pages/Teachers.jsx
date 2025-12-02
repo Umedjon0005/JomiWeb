@@ -20,7 +20,7 @@ const Teachers = () => {
 
     const container = scrollContainerRef.current
     let scrollPosition = 0
-    const scrollSpeed = 0.5 // pixels per frame
+    const scrollSpeed = 1.2 // pixels per frame
     let animationFrameId
     const cardWidth = 320 + 32 // w-80 (320px) + gap-8 (32px)
 
@@ -78,7 +78,7 @@ const Teachers = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1e3a8a]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     )
   }
@@ -122,7 +122,9 @@ const Teachers = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {teachers.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-500 text-xl">No teachers found.</p>
+              <p className="text-gray-500 text-xl">
+                {t("teachers.noTeachers", "No teachers found.")}
+              </p>
             </div>
           ) : (
             <div className="relative">
@@ -145,7 +147,7 @@ const Teachers = () => {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                   >
-                    <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#1e3a8a] shadow-xl">
+                    <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-gray-900 shadow-xl">
                       {teacher.photo_url ? (
                         <img
                           src={buildMediaUrl(teacher.photo_url)}
@@ -153,18 +155,18 @@ const Teachers = () => {
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.style.display = 'none';
-                            e.target.nextElementSibling?.style.display || (e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-6xl">👤</div>');
+                            e.target.nextElementSibling?.style.display || (e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gray-900 flex items-center justify-center text-6xl">👤</div>');
                           }}
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-6xl">
+                        <div className="w-full h-full bg-gray-900 flex items-center justify-center text-6xl">
                           👤
                         </div>
                       )}
                     </div>
                     <h3 className="font-display text-xl font-bold mb-2 text-gray-900">{teacher.name}</h3>
                     {teacher.subjects && (
-                      <p className="text-[#1e3a8a] font-semibold mb-3">{teacher.subjects}</p>
+                      <p className="text-gray-900 font-semibold mb-3">{teacher.subjects}</p>
                     )}
                     {teacher.qualifications && (
                       <p className="text-gray-500 text-sm italic mb-3">{teacher.qualifications}</p>
@@ -184,7 +186,7 @@ const Teachers = () => {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                   >
-                    <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#1e3a8a] shadow-xl">
+                    <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-gray-900 shadow-xl">
                       {teacher.photo_url ? (
                         <img
                           src={buildMediaUrl(teacher.photo_url)}
@@ -192,18 +194,18 @@ const Teachers = () => {
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.style.display = 'none';
-                            e.target.nextElementSibling?.style.display || (e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-6xl">👤</div>');
+                            e.target.nextElementSibling?.style.display || (e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gray-900 flex items-center justify-center text-6xl">👤</div>');
                           }}
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-6xl">
+                        <div className="w-full h-full bg-gray-900 flex items-center justify-center text-6xl">
                           👤
                         </div>
                       )}
                     </div>
                     <h3 className="font-display text-xl font-bold mb-2 text-gray-900">{teacher.name}</h3>
                     {teacher.subjects && (
-                      <p className="text-[#1e3a8a] font-semibold mb-3">{teacher.subjects}</p>
+                      <p className="text-gray-900 font-semibold mb-3">{teacher.subjects}</p>
                     )}
                     {teacher.qualifications && (
                       <p className="text-gray-500 text-sm italic mb-3">{teacher.qualifications}</p>

@@ -28,7 +28,7 @@ const OlympiadDetails = () => {
   if (loading) {
     return (
       <div className="pt-28 min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#87CEEB]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     );
   }
@@ -48,7 +48,7 @@ const OlympiadDetails = () => {
         </p>
         <Link
           to="/"
-          className="px-6 py-3 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] text-white rounded-full font-semibold"
+          className="px-6 py-3 bg-gray-900 text-white rounded-full font-semibold"
         >
           Back to Home
         </Link>
@@ -113,19 +113,19 @@ const OlympiadDetails = () => {
             </p>
             <ul className="space-y-3 text-gray-700">
               <li className="flex gap-3">
-                <span className="text-[#7dd3fc]">☼</span>
+                <span className="text-gray-700">☼</span>
                 <span>
                   Date: {new Date(olympiad.olympiad_date).toLocaleDateString()}
                 </span>
               </li>
               {olympiad.reference_url && (
                 <li className="flex gap-3">
-                  <span className="text-[#7dd3fc]">☼</span>
+                  <span className="text-gray-700">☼</span>
                   <a
                     href={olympiad.reference_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#7dd3fc] font-semibold"
+                    className="text-gray-900 font-semibold"
                   >
                     Official olympiad page ↗
                   </a>
@@ -133,13 +133,13 @@ const OlympiadDetails = () => {
               )}
               {olympiad.winner_name && (
                 <li className="flex gap-3">
-                  <span className="text-[#7dd3fc]">☼</span>
+                  <span className="text-gray-700">☼</span>
                   <span>Winner: {olympiad.winner_name}</span>
                 </li>
               )}
               {olympiad.project_name && (
                 <li className="flex gap-3">
-                  <span className="text-[#7dd3fc]">☼</span>
+                  <span className="text-gray-700">☼</span>
                   <span>Project: {olympiad.project_name}</span>
                 </li>
               )}

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import welcomeVideo from "../welcome.mp4";
+import { useTranslation } from "../hooks/useTranslation";
 
 const Welcome = () => {
   const [showContent, setShowContent] = useState(false);
@@ -9,6 +10,7 @@ const Welcome = () => {
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const hasScrolled = useRef(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Show content after video loads
@@ -162,9 +164,9 @@ const Welcome = () => {
                     }}
                     transition={{ duration: 1, delay: 0.7 }}
                   >
-                    Welcome to
-                    <span className="block bg-gradient-to-r from-[#1e3a8a] via-[#1e40af] to-[#1e293b] bg-clip-text text-transparent mt-2">
-                      Abdurahmoni Jomi
+                    {t("welcome.titlePrefix", "Welcome to")}
+                    <span className="block text-gray-900 mt-2">
+                      {t("school.name", "Abdurahmoni Jomi Private School")}
                     </span>
                   </motion.h1>
                   

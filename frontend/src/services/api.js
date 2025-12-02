@@ -80,19 +80,25 @@ const buildParamsWithLang = (lang, params = {}) => {
 
 export const buildMediaUrl = (path) => {
   if (!path) return null;
+  
   // If already a full URL, return as is
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
   }
-  // Ensure path starts with / if it doesn't already
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   
-  // If MEDIA_BASE_URL is empty (relative), return the path as-is (nginx will handle it)
-  if (!MEDIA_BASE_URL) {
+  // Normalize path: remove leading/trailing whitespace, ensure it starts with /
+  const trimmedPath = path.trim();
+  const normalizedPath = trimmedPath.startsWith("/") ? trimmedPath : `/${trimmedPath}`;
+  
+  // If MEDIA_BASE_URL is empty or undefined (relative), return the path as-is (nginx will handle it)
+  if (!MEDIA_BASE_URL || MEDIA_BASE_URL.trim() === "") {
     return normalizedPath;
   }
   
-  return `${MEDIA_BASE_URL}${normalizedPath}`;
+  // Ensure MEDIA_BASE_URL doesn't end with / and path starts with /
+  const baseUrl = MEDIA_BASE_URL.endsWith("/") ? MEDIA_BASE_URL.slice(0, -1) : MEDIA_BASE_URL;
+  
+  return `${baseUrl}${normalizedPath}`;
 };
 
 // News API

@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getTeachers, createTeacher, updateTeacher, deleteTeacher } from '../services/api'
 import TeacherModal from '../components/TeacherModal'
-
-const buildImageUrl = (path) => {
-  if (!path) return null;
-  if (path.startsWith("http")) return path;
-  // Use VITE_MEDIA_URL or default to server IP
-  const mediaBase = import.meta.env.VITE_MEDIA_URL || "http://194.187.122.145:5000";
-  return `${mediaBase}${path.startsWith("/") ? path : `/${path}`}`;
-};
+import { buildImageUrl } from '../utils/formHelpers'
 
 const TeachersManagement = () => {
   const [teachers, setTeachers] = useState([])

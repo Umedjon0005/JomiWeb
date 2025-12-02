@@ -52,21 +52,21 @@ const defaultBoardingHighlights = [
     description:
       "Panoramic study lounges, wellness pods, and calming biophilic interiors for boarders.",
     icon: "🏛️",
-    accent: "from-[#1e3a8a]/30 via-white to-transparent",
+    accent: "from-gray-900/20 via-white to-transparent",
   },
   {
     title: "Clubs & Activities",
     description:
       "70+ student-led clubs, midnight astronomy, culinary labs, creative media studio.",
     icon: "🎨",
-    accent: "from-[#1e3a8a]/30 via-white to-transparent",
+    accent: "from-gray-900/20 via-white to-transparent",
   },
   {
     title: "Weekend Adventures",
     description:
       "Eco-hikes, cultural immersions, and leadership retreats around the region.",
     icon: "🧭",
-    accent: "from-[#a5b4fc]/30 via-white to-transparent",
+    accent: "from-gray-800/20 via-white to-transparent",
   },
 ];
 
@@ -248,7 +248,7 @@ const Home = () => {
         if (teachersScrollRef.current && teachersRes.data.length > 0) {
           const container = teachersScrollRef.current;
           let scrollPosition = 0;
-          const scrollSpeed = 0.5;
+          const scrollSpeed = 1.2;
           let animationFrameId;
           const cardWidth = 320 + 32; // w-80 (320px) + gap-8 (32px)
           const singleSetWidth = teachersRes.data.slice(0, 4).length * cardWidth;
@@ -308,7 +308,7 @@ const Home = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1e3a8a]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     );
   }
@@ -367,7 +367,7 @@ const Home = () => {
               transition={{ delay: 0.3, duration: 0.6 }}
             >
               <a
-                className="px-8 py-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white font-semibold rounded-full shadow-[0_10px_40px_rgba(30,58,138,0.35)] hover:scale-105 transition-all duration-300"
+                className="px-8 py-4 bg-gray-900 text-white font-semibold rounded-full shadow-lg hover:bg-gray-800 hover:scale-105 transition-all duration-300"
                 href="#experience"
               >
                 {t("hero.primaryCta", "Plan a Visit")}
@@ -405,7 +405,7 @@ const Home = () => {
                 </div>
               ))}
               <div className="flex items-center gap-4 pt-2">
-                <div className="w-12 h-12 rounded-full bg-[#1e3a8a]/30 flex items-center justify-center text-2xl">
+                <div className="w-12 h-12 rounded-full bg-gray-900/30 flex items-center justify-center text-2xl">
                   🌍
                 </div>
                 <div>
@@ -422,7 +422,7 @@ const Home = () => {
         </div>
 
         <motion.div
-          className="absolute -bottom-16 -right-10 w-72 h-72 bg-[#1e3a8a]/30 blur-[80px]"
+          className="absolute -bottom-16 -right-10 w-72 h-72 bg-gray-900/30 blur-[80px]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.8 }}
           transition={{ delay: 0.5, duration: 1 }}
@@ -462,7 +462,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
               >
-                <p className="text-xs uppercase tracking-[0.4em] text-[#1e3a8a]">
+                <p className="text-xs uppercase tracking-[0.4em] text-gray-700">
                   {moment.time}
                 </p>
                 <h3 className="font-display text-2xl font-semibold text-gray-900 mt-2 mb-3">
@@ -488,7 +488,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
               >
-                <div className="text-5xl font-bold bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent mb-2">
+                <div className="text-5xl font-bold text-gray-900 mb-2">
                   {stat.stat_value}+
                 </div>
                 <div className="text-gray-600 font-medium">{stat.label}</div>
@@ -503,7 +503,7 @@ const Home = () => {
         <section className="py-20 bg-gray-50" id="explore">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-gray-900">
                 {newsCopy.title}
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -547,7 +547,7 @@ const Home = () => {
                         <p className="text-gray-600 mb-6 leading-relaxed line-clamp-4">
                           {item.content.substring(0, 200)}...
                         </p>
-                        <span className="text-[#1e3a8a] font-semibold">
+                        <span className="text-gray-700 font-semibold">
                           {new Date(item.publish_date).toLocaleDateString()}
                         </span>
                       </div>
@@ -562,7 +562,7 @@ const Home = () => {
                     key={index}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       index === currentNewsIndex
-                        ? "w-8 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af]"
+                        ? "w-8 bg-gray-900"
                         : "w-2 bg-gray-300"
                     }`}
                     onClick={() => setCurrentNewsIndex(index)}
@@ -579,7 +579,7 @@ const Home = () => {
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-gray-900">
                 {eventsCopy.title}
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -637,7 +637,7 @@ const Home = () => {
             <div className="text-center">
               <a
                 href="/events"
-                className="inline-block px-8 py-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="inline-block px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
                 {eventsCopy.button}
               </a>
@@ -652,8 +652,8 @@ const Home = () => {
         className="py-20 bg-gradient-to-br from-[#f0fdfa] to-[#f5f3ff] relative overflow-hidden"
       >
         <div className="absolute inset-0 opacity-20">
-          <div className="w-64 h-64 bg-[#1e3a8a]/40 blur-3xl absolute -top-10 -left-10"></div>
-          <div className="w-72 h-72 bg-[#1e40af]/35 blur-3xl absolute bottom-0 right-0"></div>
+          <div className="w-64 h-64 bg-gray-900/20 blur-3xl absolute -top-10 -left-10"></div>
+          <div className="w-72 h-72 bg-gray-800/20 blur-3xl absolute bottom-0 right-0"></div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-12">
@@ -727,7 +727,7 @@ const Home = () => {
             <p className="uppercase tracking-[0.3em] text-xs text-gray-400 mb-4">
               {globalHighlightsCopy.kicker}
             </p>
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#7dd3fc] to-[#c084fc] bg-clip-text text-transparent">
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-gray-900">
               {globalHighlightsCopy.title}
             </h2>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -754,10 +754,10 @@ const Home = () => {
                 <p className="text-gray-600 mb-6">{trip.detail}</p>
                 <Link
                   to={`/olympiads/${trip.id}`}
-                  className="inline-flex items-center gap-2 font-semibold text-[#1e3a8a]"
+                  className="inline-flex items-center gap-2 font-semibold text-gray-900"
                 >
                   {globalHighlightsCopy.viewJourney}
-                  <span className="h-6 w-6 rounded-full bg-[#1e3a8a]/10 flex items-center justify-center group-hover:translate-x-1 transition-all duration-300">
+                    <span className="h-6 w-6 rounded-full bg-gray-900/10 flex items-center justify-center group-hover:translate-x-1 transition-all duration-300">
                     →
                   </span>
                 </Link>
@@ -784,7 +784,7 @@ const Home = () => {
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] bg-clip-text text-transparent">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 text-gray-900">
                 {teachersCopy.title}
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -811,7 +811,7 @@ const Home = () => {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                   >
-                    <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-[#1e3a8a] shadow-lg">
+                    <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-900 shadow-lg">
                       {teacher.photo_url ? (
                         <img
                           src={buildMediaUrl(teacher.photo_url)}
@@ -819,7 +819,7 @@ const Home = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-5xl">
+                        <div className="w-full h-full bg-gray-900 flex items-center justify-center text-5xl">
                           👤
                         </div>
                       )}
@@ -828,7 +828,7 @@ const Home = () => {
                       {teacher.name}
                     </h3>
                     {teacher.subjects && (
-                      <p className="text-[#1e3a8a] font-semibold mb-2">
+                      <p className="text-gray-900 font-semibold mb-2">
                         {teacher.subjects}
                       </p>
                     )}
@@ -847,7 +847,7 @@ const Home = () => {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                   >
-                    <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-[#1e3a8a] shadow-lg">
+                    <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-900 shadow-lg">
                       {teacher.photo_url ? (
                         <img
                           src={buildMediaUrl(teacher.photo_url)}
@@ -855,7 +855,7 @@ const Home = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] flex items-center justify-center text-5xl">
+                        <div className="w-full h-full bg-gray-900 flex items-center justify-center text-5xl">
                           👤
                         </div>
                       )}
@@ -864,7 +864,7 @@ const Home = () => {
                       {teacher.name}
                     </h3>
                     {teacher.subjects && (
-                      <p className="text-[#1e3a8a] font-semibold mb-2">
+                      <p className="text-gray-900 font-semibold mb-2">
                         {teacher.subjects}
                       </p>
                     )}
@@ -879,7 +879,7 @@ const Home = () => {
             <div className="text-center">
               <a
                 href="/teachers"
-                className="inline-block px-8 py-4 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300"
+                className="inline-block px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
                 {teachersCopy.button}
               </a>
@@ -889,7 +889,7 @@ const Home = () => {
       )}
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-[#1e3a8a] to-[#1e40af]">
+      <section className="py-20 bg-gray-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -906,13 +906,13 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/contact"
-                className="px-8 py-4 bg-white text-[#1e3a8a] font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300"
+                className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300"
               >
                 {ctaCopy.primaryButton}
               </a>
               <a
                 href="/about"
-                className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-[#1e3a8a] transition-all duration-300"
+                className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-gray-900 transition-all duration-300"
               >
                 {ctaCopy.secondaryButton}
               </a>

@@ -143,7 +143,7 @@ const PhotoModal = ({ photo, onClose, onSave }) => {
                     onClick={() => setActiveLang(lang.key)}
                     className={`px-3 py-1 text-xs font-semibold rounded-md border ${
                       activeLang === lang.key
-                        ? "bg-[#1e3a8a] text-white border-transparent"
+                        ? "bg-gray-700 text-white border-transparent"
                         : "text-[#9ca3af] border-[#374151]"
                     }`}
                   >
@@ -158,7 +158,7 @@ const PhotoModal = ({ photo, onClose, onSave }) => {
               value={formData[activeLang === "en" ? "title" : `title_${activeLang}`]}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-white placeholder-[#6b7280] focus:outline-none focus:border-[#3b82f6] transition-colors"
+              className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-white placeholder-[#6b7280] focus:outline-none focus:border-gray-500 transition-colors"
               placeholder="e.g., Immersive Labs"
             />
           </div>
@@ -171,7 +171,7 @@ const PhotoModal = ({ photo, onClose, onSave }) => {
               value={formData[activeLang === "en" ? "description" : `description_${activeLang}`]}
               onChange={handleChange}
               rows={3}
-              className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-white placeholder-[#6b7280] focus:outline-none focus:border-[#3b82f6] transition-colors"
+              className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-white placeholder-[#6b7280] focus:outline-none focus:border-gray-500 transition-colors"
               placeholder="Brief description of the photo"
             />
           </div>
@@ -195,10 +195,10 @@ const PhotoModal = ({ photo, onClose, onSave }) => {
               </label>
               <input
                 type="file"
-                accept="image/*,.png,.jpg,.jpeg,.gif,.webp,.svg"
+                accept="image/*"
                 onChange={handleImageChange}
                 required={!photo}
-                className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-[#9ca3af] focus:outline-none focus:border-[#3b82f6] transition-colors"
+                className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-[#9ca3af] focus:outline-none focus:border-gray-500 transition-colors"
               />
             </div>
           </div>
@@ -227,7 +227,7 @@ const PhotoModal = ({ photo, onClose, onSave }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-[#1e3a8a] hover:bg-[#1e40af] text-white text-sm font-medium rounded-md transition-colors border border-[#3b82f6]/30 disabled:opacity-50"
+              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-md transition-colors border border-gray-600 disabled:opacity-50"
             >
               {loading ? "Saving..." : "Save"}
             </button>

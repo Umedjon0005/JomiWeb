@@ -53,7 +53,7 @@ const Olympiads = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1e3a8a]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     );
   }
@@ -99,7 +99,7 @@ const Olympiads = () => {
                 onClick={() => setFilter(f)}
                 className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 capitalize ${
                   filter === f
-                    ? "bg-gradient-to-r from-[#1e3a8a] to-[#1e40af] text-white shadow-lg"
+                    ? "bg-gray-900 text-white shadow-lg"
                     : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                 }`}
               >
@@ -176,7 +176,7 @@ const Olympiads = () => {
                             href={olympiad.reference_url}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-2 text-sm font-semibold text-[#1e3a8a]"
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900"
                           >
                             {t("olympiads.officialPage", "Official olympiad page")}
                             <span>↗</span>

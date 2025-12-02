@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { getPhotos, buildMediaUrl } from "../services/api";
 import { useLanguage } from "../context/LanguageContext";
+import { useTranslation } from "../hooks/useTranslation";
 
 const fallbackPhotos = [
   {
@@ -38,6 +39,7 @@ const PhotoShowcase = () => {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const { language } = useLanguage();
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchPhotos();
@@ -55,26 +57,34 @@ const PhotoShowcase = () => {
     }
   };
 
-  const displayPhotos = photos.length > 0 ? photos : fallbackPhotos;
+  const copy = {
+    kicker: t("home.photos.kicker", "Visual Stories"),
+    title: t("home.photos.title", "Spaces That Inspire Bold Ideas"),
+    subtitle: t(
+      "home.photos.subtitle",
+      "From sunrise sketch sessions to midnight robotics breakthroughs, our campus is alive 24/7. Explore the textures, colors, and atmospheres students call home."
+    ),
+  };
+
+  const translatedFallback = t("home.photos.fallback", fallbackPhotos);
+  const displayPhotos = photos.length > 0 ? photos : translatedFallback;
   return (
     <section className="py-24 bg-gradient-to-br from-[#0b182f] via-[#0f274a] to-[#04101f] text-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10 mb-16">
           <div>
             <p className="uppercase tracking-[0.4em] text-xs text-white/60 mb-4">
-              Visual Stories
+              {copy.kicker}
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-bold leading-tight">
-              Spaces That Inspire Bold Ideas
+              {copy.title}
             </h2>
             <p className="mt-4 text-white/70 text-lg max-w-2xl">
-              From sunrise sketch sessions to midnight robotics breakthroughs,
-              our campus is alive 24/7. Explore the textures, colors, and
-              atmospheres students call home.
+              {copy.subtitle}
             </p>
           </div>
           <div className="flex gap-4">
-            <span className="w-3 h-3 rounded-full bg-[#87CEEB]" />
+            <span className="w-3 h-3 rounded-full bg-gray-900" />
             <span className="w-3 h-3 rounded-full bg-white/40" />
             <span className="w-3 h-3 rounded-full bg-white/40" />
           </div>
