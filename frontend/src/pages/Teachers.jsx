@@ -19,25 +19,43 @@ const Teachers = () => {
     if (teachers.length === 0 || !scrollContainerRef.current) return
 
     const container = scrollContainerRef.current
+    // Detect mobile devices
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
+    
+    // Disable autoscroll on mobile for better performance
+    if (isMobile) {
+      return
+    }
+
     let scrollPosition = 0
-    const scrollSpeed = 1.2 // pixels per frame
+    const scrollSpeed = 0.8 // Reduced for smoother performance
     let animationFrameId
+    let lastTime = performance.now()
+    const targetFPS = 60
+    const frameInterval = 1000 / targetFPS
     const cardWidth = 320 + 32 // w-80 (320px) + gap-8 (32px)
 
-    const autoScroll = () => {
-      scrollPosition += scrollSpeed
-      const singleSetWidth = teachers.length * cardWidth
+    const autoScroll = (currentTime) => {
+      const deltaTime = currentTime - lastTime
       
-      // When we've scrolled past one full set, reset to beginning seamlessly
-      if (scrollPosition >= singleSetWidth) {
-        scrollPosition = scrollPosition - singleSetWidth
+      // Throttle to target FPS for smoother performance
+      if (deltaTime >= frameInterval) {
+        scrollPosition += scrollSpeed * (deltaTime / frameInterval)
+        const singleSetWidth = teachers.length * cardWidth
+        
+        // When we've scrolled past one full set, reset to beginning seamlessly
+        if (scrollPosition >= singleSetWidth) {
+          scrollPosition = scrollPosition - singleSetWidth
+        }
+        
+        container.scrollLeft = scrollPosition
+        lastTime = currentTime - (deltaTime % frameInterval)
       }
       
-      container.scrollLeft = scrollPosition
       animationFrameId = requestAnimationFrame(autoScroll)
     }
 
-    // Pause on hover
+    // Pause on hover/touch
     const handleMouseEnter = () => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId)
@@ -45,11 +63,19 @@ const Teachers = () => {
     }
 
     const handleMouseLeave = () => {
+      lastTime = performance.now()
       animationFrameId = requestAnimationFrame(autoScroll)
+    }
+
+    const handleTouchStart = () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
     }
 
     container.addEventListener('mouseenter', handleMouseEnter)
     container.addEventListener('mouseleave', handleMouseLeave)
+    container.addEventListener('touchstart', handleTouchStart, { passive: true })
 
     // Start auto-scroll
     animationFrameId = requestAnimationFrame(autoScroll)
@@ -60,6 +86,7 @@ const Teachers = () => {
       }
       container.removeEventListener('mouseenter', handleMouseEnter)
       container.removeEventListener('mouseleave', handleMouseLeave)
+      container.removeEventListener('touchstart', handleTouchStart)
     }
   }, [teachers])
 

@@ -255,20 +255,40 @@ const Home = () => {
       teachersScrollTimeoutRef.current = setTimeout(() => {
         if (teachersScrollRef.current && teachersRes.data.length > 0) {
           const container = teachersScrollRef.current;
+          // Detect mobile devices
+          const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
+          
+          // Disable autoscroll on mobile for better performance
+          if (isMobile) {
+            teachersScrollCleanupRef.current = () => {};
+            return;
+          }
+
           let scrollPosition = 0;
-          const scrollSpeed = 1.2;
+          const scrollSpeed = 0.8; // Reduced for smoother performance
           let animationFrameId;
+          let lastTime = performance.now();
+          const targetFPS = 60;
+          const frameInterval = 1000 / targetFPS;
+          
           const cardWidth = 320 + 32; // w-80 (320px) + gap-8 (32px)
           const singleSetWidth = teachersRes.data.slice(0, 4).length * cardWidth;
 
-          const autoScroll = () => {
-            scrollPosition += scrollSpeed;
+          const autoScroll = (currentTime) => {
+            const deltaTime = currentTime - lastTime;
+            
+            // Throttle to target FPS for smoother performance
+            if (deltaTime >= frameInterval) {
+              scrollPosition += scrollSpeed * (deltaTime / frameInterval);
 
-            if (scrollPosition >= singleSetWidth) {
-              scrollPosition = scrollPosition - singleSetWidth;
+              if (scrollPosition >= singleSetWidth) {
+                scrollPosition = scrollPosition - singleSetWidth;
+              }
+
+              container.scrollLeft = scrollPosition;
+              lastTime = currentTime - (deltaTime % frameInterval);
             }
 
-            container.scrollLeft = scrollPosition;
             animationFrameId = requestAnimationFrame(autoScroll);
           };
 
@@ -279,11 +299,20 @@ const Home = () => {
           };
 
           const handleMouseLeave = () => {
+            lastTime = performance.now();
             animationFrameId = requestAnimationFrame(autoScroll);
+          };
+
+          const handleTouchStart = () => {
+            // Pause on touch (mobile interaction)
+            if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+            }
           };
 
           container.addEventListener("mouseenter", handleMouseEnter);
           container.addEventListener("mouseleave", handleMouseLeave);
+          container.addEventListener("touchstart", handleTouchStart, { passive: true });
 
           animationFrameId = requestAnimationFrame(autoScroll);
 
@@ -293,6 +322,7 @@ const Home = () => {
             }
             container.removeEventListener("mouseenter", handleMouseEnter);
             container.removeEventListener("mouseleave", handleMouseLeave);
+            container.removeEventListener("touchstart", handleTouchStart);
           };
         }
         teachersScrollTimeoutRef.current = null;

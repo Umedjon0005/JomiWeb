@@ -1,21 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import welcomeVideo from "../welcome.mp4";
 import { useTranslation } from "../hooks/useTranslation";
 
 const Welcome = () => {
   const [showContent, setShowContent] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
-  const [videoSrc, setVideoSrc] = useState(welcomeVideo);
+  const [videoSrc, setVideoSrc] = useState("/welcome.mp4");
   const [videoError, setVideoError] = useState(false);
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const hasScrolled = useRef(false);
   const { t } = useTranslation();
-  
-  // Fallback video URL
-  const fallbackVideo = "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4";
 
   useEffect(() => {
     // Show content after video loads
@@ -135,22 +131,14 @@ const Welcome = () => {
                 muted
                 loop
                 playsInline
-                preload="auto"
+                preload="metadata"
                 onError={(e) => {
-                  console.error("Video failed to load from:", videoSrc);
-                  if (!videoError && videoSrc === welcomeVideo) {
-                    // Try fallback video
-                    console.log("Trying fallback video...");
+                  if (!videoError) {
+                    // Hide video on error and show gradient background instead
                     setVideoError(true);
-                    setVideoSrc(fallbackVideo);
-                  } else {
-                    // Hide video if both fail
-                    console.error("All video sources failed to load");
                     e.target.style.display = 'none';
+                    console.warn("Video failed to load, using gradient background");
                   }
-                }}
-                onLoadedData={() => {
-                  console.log("Video loaded successfully from:", videoSrc);
                 }}
                 initial={{ scale: 1 }}
                 animate={{ scale: isExiting ? 1.2 : 1 }}
