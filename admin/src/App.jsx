@@ -17,6 +17,7 @@ import PhotosManagement from "./pages/PhotosManagement";
 import TeachersManagement from "./pages/TeachersManagement";
 import AboutManagement from "./pages/AboutManagement";
 import StatsManagement from "./pages/StatsManagement";
+import ContactManagement from "./pages/ContactManagement";
 import Layout from "./components/Layout";
 import { getToken } from "./utils/auth";
 
@@ -128,6 +129,7 @@ function App() {
           <Route path="teachers" element={<TeachersManagement />} />
           <Route path="about" element={<AboutManagement />} />
           <Route path="stats" element={<StatsManagement />} />
+          <Route path="contact" element={<ContactManagement />} />
         </Route>
       </Routes>
     </Router>

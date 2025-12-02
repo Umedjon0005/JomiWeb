@@ -327,4 +327,10 @@ export const updatePhoto = (id, data) => {
 };
 export const deletePhoto = (id) => api.delete(`/photos/${id}`);
 
+// Contact Requests API
+export const getContactRequests = () => api.get("/contact");
+export const getContactRequestById = (id) => api.get(`/contact/${id}`);
+export const markContactAsRead = (id) => api.patch(`/contact/${id}/read`);
+export const deleteContactRequest = (id) => api.delete(`/contact/${id}`);
+
 export default api;
