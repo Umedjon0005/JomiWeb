@@ -15,6 +15,14 @@ import MomentsGallery from "../components/MomentsGallery";
 import { useLanguage } from "../context/LanguageContext";
 import { useTranslation } from "../hooks/useTranslation";
 
+// Helper function to strip HTML tags and get plain text
+const stripHtml = (html) => {
+  if (!html) return "";
+  const tmp = document.createElement("DIV");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+};
+
 const defaultHeroStats = [
   {
     label: "Global Delegations",
@@ -545,7 +553,8 @@ const Home = () => {
                           {item.title}
                         </h3>
                         <p className="text-gray-600 mb-6 leading-relaxed line-clamp-4">
-                          {item.content.substring(0, 200)}...
+                          {stripHtml(item.content).substring(0, 200)}
+                          {stripHtml(item.content).length > 200 ? "..." : ""}
                         </p>
                         <span className="text-gray-700 font-semibold">
                           {new Date(item.publish_date).toLocaleDateString()}
@@ -613,7 +622,8 @@ const Home = () => {
                       {event.title}
                     </h3>
                     <p className="text-gray-600 mb-4 line-clamp-3">
-                      {event.description.substring(0, 100)}...
+                      {stripHtml(event.description).substring(0, 100)}
+                      {stripHtml(event.description).length > 100 ? "..." : ""}
                     </p>
                     <div className="space-y-2 text-sm text-gray-500">
                       <div className="flex items-center gap-2">

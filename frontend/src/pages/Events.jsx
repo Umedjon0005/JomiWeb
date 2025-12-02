@@ -4,6 +4,14 @@ import { getEvents, buildMediaUrl } from '../services/api'
 import { useLanguage } from '../context/LanguageContext'
 import { useTranslation } from '../hooks/useTranslation'
 
+// Helper function to strip HTML tags and get plain text
+const stripHtml = (html) => {
+  if (!html) return "";
+  const tmp = document.createElement("DIV");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+};
+
 const Events = () => {
   const [events, setEvents] = useState([])
   const [filteredEvents, setFilteredEvents] = useState([])
@@ -132,7 +140,7 @@ const Events = () => {
                   )}
                   <div className="p-6">
                     <h3 className="font-display text-2xl font-bold mb-3 text-gray-900">{event.title}</h3>
-                    <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">{event.description}</p>
+                    <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">{stripHtml(event.description)}</p>
                     <div className="space-y-2 text-sm text-gray-500 border-t pt-4">
                       <div className="flex items-center gap-2">
                         <span>📅</span>
