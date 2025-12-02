@@ -7,7 +7,8 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "migrate": "node src/config/migrate.js",
-    "seed": "node src/config/seed.js"
+    "seed": "node src/config/seed.js",
+    "add-contact-table": "node add-contact-table.js"
   },
   "keywords": [],
   "author": "",

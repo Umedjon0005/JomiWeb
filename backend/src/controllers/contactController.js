@@ -30,7 +30,26 @@ const submitContact = async (req, res) => {
     });
   } catch (error) {
     console.error('Error processing contact form:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error details:', {
+      code: error.code,
+      message: error.message,
+      detail: error.detail,
+      table: error.table
+    });
+    
+    // Check if table doesn't exist
+    if (error.code === '42P01' || error.message?.includes('does not exist') || error.message?.includes('contact_requests')) {
+      console.error('❌ Contact requests table does not exist. Please run migration.');
+      return res.status(500).json({ 
+        message: 'Database configuration error. Please contact administrator.',
+        error: 'Table contact_requests does not exist. Please run database migration.'
+      });
+    }
+    
+    res.status(500).json({ 
+      message: 'Server error. Please try again later.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
