@@ -43,8 +43,12 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Serve uploaded files - use the same upload directory as the upload middleware
+const uploadDir = process.env.UPLOAD_PATH 
+  ? process.env.UPLOAD_PATH 
+  : path.resolve(__dirname, "..", "uploads");
+app.use("/uploads", express.static(uploadDir));
+console.log(`Serving static files from: ${uploadDir}`);
 
 // Swagger Documentation
 app.use(
