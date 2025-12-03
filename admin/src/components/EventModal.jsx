@@ -3,7 +3,7 @@ import { createEvent, updateEvent } from '../services/api'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { SUPPORTED_LANGS } from '../constants/languages'
-import { formatDateForInput, normalizeLanguageFields } from '../utils/formHelpers'
+import { formatDateForInput, normalizeLanguageFields, buildImageUrl } from '../utils/formHelpers'
 
 const EventModal = ({ event, onClose, onSave }) => {
   const [formData, setFormData] = useState({

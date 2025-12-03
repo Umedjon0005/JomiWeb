@@ -36,6 +36,16 @@
     display: none;
   }
   
+  /* Optimize scrolling performance */
+  .optimized-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: auto;
+    will-change: scroll-position;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
   .smooth-shadow {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
   }

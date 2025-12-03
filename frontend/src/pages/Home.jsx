@@ -265,68 +265,77 @@ const Home = () => {
           }
 
           let scrollPosition = 0;
-          const scrollSpeed = 0.8; // Reduced for smoother performance
-          let animationFrameId;
-          let lastTime = performance.now();
-          const targetFPS = 60;
-          const frameInterval = 1000 / targetFPS;
+          let isPaused = false;
+          let animationFrameId = null;
+          const scrollSpeed = 0.5; // Slower for clearer, smoother scroll
           
           const cardWidth = 320 + 32; // w-80 (320px) + gap-8 (32px)
           const singleSetWidth = teachersRes.data.slice(0, 4).length * cardWidth;
 
-          const autoScroll = (currentTime) => {
-            const deltaTime = currentTime - lastTime;
+          const autoScroll = () => {
+            if (isPaused) return;
             
-            // Throttle to target FPS for smoother performance
-            if (deltaTime >= frameInterval) {
-              scrollPosition += scrollSpeed * (deltaTime / frameInterval);
-
-              if (scrollPosition >= singleSetWidth) {
-                scrollPosition = scrollPosition - singleSetWidth;
-              }
-
-              container.scrollLeft = scrollPosition;
-              lastTime = currentTime - (deltaTime % frameInterval);
+            scrollPosition += scrollSpeed;
+            
+            if (scrollPosition >= singleSetWidth) {
+              scrollPosition = 0;
             }
+
+            container.scrollTo({
+              left: scrollPosition,
+              behavior: 'auto' // Use instant scroll for smoother performance
+            });
 
             animationFrameId = requestAnimationFrame(autoScroll);
           };
 
           const handleMouseEnter = () => {
-            if (animationFrameId) {
-              cancelAnimationFrame(animationFrameId);
-            }
+            isPaused = true;
           };
 
           const handleMouseLeave = () => {
-            lastTime = performance.now();
-            animationFrameId = requestAnimationFrame(autoScroll);
-          };
-
-          const handleTouchStart = () => {
-            // Pause on touch (mobile interaction)
-            if (animationFrameId) {
-              cancelAnimationFrame(animationFrameId);
+            isPaused = false;
+            if (!animationFrameId) {
+              animationFrameId = requestAnimationFrame(autoScroll);
             }
           };
 
-          container.addEventListener("mouseenter", handleMouseEnter);
-          container.addEventListener("mouseleave", handleMouseLeave);
-          container.addEventListener("touchstart", handleTouchStart, { passive: true });
+          const handleTouchStart = () => {
+            isPaused = true;
+          };
 
+          const handleTouchEnd = () => {
+            // Resume after a short delay
+            setTimeout(() => {
+              isPaused = false;
+              if (!animationFrameId) {
+                animationFrameId = requestAnimationFrame(autoScroll);
+              }
+            }, 2000);
+          };
+
+          container.addEventListener("mouseenter", handleMouseEnter, { passive: true });
+          container.addEventListener("mouseleave", handleMouseLeave, { passive: true });
+          container.addEventListener("touchstart", handleTouchStart, { passive: true });
+          container.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+          // Start auto-scroll after a short delay
           animationFrameId = requestAnimationFrame(autoScroll);
 
           teachersScrollCleanupRef.current = () => {
+            isPaused = true;
             if (animationFrameId) {
               cancelAnimationFrame(animationFrameId);
+              animationFrameId = null;
             }
             container.removeEventListener("mouseenter", handleMouseEnter);
             container.removeEventListener("mouseleave", handleMouseLeave);
             container.removeEventListener("touchstart", handleTouchStart);
+            container.removeEventListener("touchend", handleTouchEnd);
           };
         }
         teachersScrollTimeoutRef.current = null;
-      }, 1000);
+      }, 1500);
 
       setStats(statsRes.data);
       setOlympiads(olympiadsRes.data);
@@ -835,21 +844,13 @@ const Home = () => {
             <div className="relative">
               <div 
                 ref={teachersScrollRef}
-                className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
-                style={{
-                  scrollbarWidth: 'none',
-                  msOverflowStyle: 'none',
-                }}
+                className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 optimized-scroll"
               >
                 {/* First set of teachers */}
                 {teachers.map((teacher, index) => (
-                  <motion.div
+                  <div
                     key={`teacher-${teacher.id}-1`}
-                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-shadow duration-200 border border-gray-100"
                   >
                     <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-900 shadow-lg">
                       {teacher.photo_url ? (
@@ -873,19 +874,18 @@ const Home = () => {
                       </p>
                     )}
                     {teacher.bio && (
-                      <div className="text-gray-600 text-sm line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio.substring(0, 100) + '...' }} />
+                      <p className="text-gray-600 text-sm line-clamp-3">
+                        {stripHtml(teacher.bio).substring(0, 100)}
+                        {stripHtml(teacher.bio).length > 100 ? '...' : ''}
+                      </p>
                     )}
-                  </motion.div>
+                  </div>
                 ))}
                 {/* Duplicate set for infinite scroll */}
                 {teachers.map((teacher, index) => (
-                  <motion.div
+                  <div
                     key={`teacher-${teacher.id}-2`}
-                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-shadow duration-200 border border-gray-100"
                   >
                     <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-900 shadow-lg">
                       {teacher.photo_url ? (
@@ -909,9 +909,12 @@ const Home = () => {
                       </p>
                     )}
                     {teacher.bio && (
-                      <div className="text-gray-600 text-sm line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio.substring(0, 100) + '...' }} />
+                      <p className="text-gray-600 text-sm line-clamp-3">
+                        {stripHtml(teacher.bio).substring(0, 100)}
+                        {stripHtml(teacher.bio).length > 100 ? '...' : ''}
+                      </p>
                     )}
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
