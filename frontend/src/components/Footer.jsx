@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import logo from "../logo.png";
 import { useTranslation } from "../hooks/useTranslation";
+import logo from "../logo.png";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -17,9 +17,9 @@ const Footer = () => {
                 alt="School Logo"
                 className="h-20 w-20 object-contain"
               />
-              <h3 className="font-display text-2xl font-bold text-white">
-                {t("school.name", "Abdurahmoni Jomi Private School")}
-              </h3>
+             <h3 className="font-display font-bold text-white text-[22px]">
+                  {t("school.name", "Abdurahmoni Jomi Private School")}
+                </h3>
             </div>
             <p className="text-gray-400 leading-relaxed">
               {t(

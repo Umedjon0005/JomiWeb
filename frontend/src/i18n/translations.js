@@ -280,7 +280,7 @@ export const translations = {
   ru: {
     languages: { en: "Английский", ru: "Русский", tj: "Таджикский" },
     school: {
-      name: "Частная школа Абдурахмони Джоми",
+      name: "ЧОУ «Абдурахмони Джами»",
     },
     footer: {
       tagline:
@@ -560,7 +560,7 @@ export const translations = {
   tj: {
     languages: { en: "Англисӣ", ru: "Русӣ", tj: "Тоҷикӣ" },
     school: {
-      name: "Мактаби хусусии Абдурахмони Ҷомӣ",
+      name: 'МТХ "Абдураҳмони Ҷомӣ"',
     },
     footer: {
       tagline:
