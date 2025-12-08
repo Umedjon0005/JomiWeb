@@ -19,84 +19,47 @@ const Teachers = () => {
     if (teachers.length === 0 || !scrollContainerRef.current) return
 
     const container = scrollContainerRef.current
-    // Detect mobile devices
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768
-    
-    // Disable autoscroll on mobile for better performance
-    if (isMobile) {
-      return
-    }
-
     let scrollPosition = 0
-    let isPaused = false
-    let animationFrameId = null
-    const scrollSpeed = 0.5 // Slower for clearer, smoother scroll
+    const scrollSpeed = 1.2 // pixels per frame
+    let animationFrameId
     const cardWidth = 320 + 32 // w-80 (320px) + gap-8 (32px)
-    const singleSetWidth = teachers.length * cardWidth
 
     const autoScroll = () => {
-      if (isPaused) return
-      
       scrollPosition += scrollSpeed
+      const singleSetWidth = teachers.length * cardWidth
       
+      // When we've scrolled past one full set, reset to beginning seamlessly
       if (scrollPosition >= singleSetWidth) {
-        scrollPosition = 0
+        scrollPosition = scrollPosition - singleSetWidth
       }
       
-      container.scrollTo({
-        left: scrollPosition,
-        behavior: 'auto' // Use instant scroll for smoother performance
-      })
-      
+      container.scrollLeft = scrollPosition
       animationFrameId = requestAnimationFrame(autoScroll)
     }
 
-    // Pause on hover/touch
+    // Pause on hover
     const handleMouseEnter = () => {
-      isPaused = true
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
     }
 
     const handleMouseLeave = () => {
-      isPaused = false
-      if (!animationFrameId) {
-        animationFrameId = requestAnimationFrame(autoScroll)
-      }
-    }
-
-    const handleTouchStart = () => {
-      isPaused = true
-    }
-
-    const handleTouchEnd = () => {
-      // Resume after a short delay
-      setTimeout(() => {
-        isPaused = false
-        if (!animationFrameId) {
-          animationFrameId = requestAnimationFrame(autoScroll)
-        }
-      }, 2000)
-    }
-
-    container.addEventListener('mouseenter', handleMouseEnter, { passive: true })
-    container.addEventListener('mouseleave', handleMouseLeave, { passive: true })
-    container.addEventListener('touchstart', handleTouchStart, { passive: true })
-    container.addEventListener('touchend', handleTouchEnd, { passive: true })
-
-    // Start auto-scroll after a short delay
-    setTimeout(() => {
       animationFrameId = requestAnimationFrame(autoScroll)
-    }, 500)
+    }
+
+    container.addEventListener('mouseenter', handleMouseEnter)
+    container.addEventListener('mouseleave', handleMouseLeave)
+
+    // Start auto-scroll
+    animationFrameId = requestAnimationFrame(autoScroll)
 
     return () => {
-      isPaused = true
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId)
-        animationFrameId = null
       }
       container.removeEventListener('mouseenter', handleMouseEnter)
       container.removeEventListener('mouseleave', handleMouseLeave)
-      container.removeEventListener('touchstart', handleTouchStart)
-      container.removeEventListener('touchend', handleTouchEnd)
     }
   }, [teachers])
 
@@ -168,13 +131,21 @@ const Teachers = () => {
               {/* Horizontal scrolling container with infinite scroll */}
               <div 
                 ref={scrollContainerRef}
-                className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 optimized-scroll"
+                className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                }}
               >
                 {/* First set of teachers */}
                 {teachers.map((teacher, index) => (
-                  <div
+                  <motion.div
                     key={`teacher-${teacher.id}-1`}
-                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-100"
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
                   >
                     <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-gray-900 shadow-xl">
                       {teacher.photo_url ? (
@@ -201,18 +172,19 @@ const Teachers = () => {
                       <p className="text-gray-500 text-sm italic mb-3">{teacher.qualifications}</p>
                     )}
                     {teacher.bio && (
-                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
-                        {teacher.bio.replace(/<[^>]*>/g, '').substring(0, 150)}
-                        {teacher.bio.replace(/<[^>]*>/g, '').length > 150 ? '...' : ''}
-                      </p>
+                      <div className="text-gray-600 text-sm leading-relaxed line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio }} />
                     )}
-                  </div>
+                  </motion.div>
                 ))}
                 {/* Duplicate set for infinite scroll */}
                 {teachers.map((teacher, index) => (
-                  <div
+                  <motion.div
                     key={`teacher-${teacher.id}-2`}
-                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-100"
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
                   >
                     <div className="w-36 h-36 mx-auto mb-6 rounded-full overflow-hidden border-4 border-gray-900 shadow-xl">
                       {teacher.photo_url ? (
@@ -239,12 +211,9 @@ const Teachers = () => {
                       <p className="text-gray-500 text-sm italic mb-3">{teacher.qualifications}</p>
                     )}
                     {teacher.bio && (
-                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
-                        {teacher.bio.replace(/<[^>]*>/g, '').substring(0, 150)}
-                        {teacher.bio.replace(/<[^>]*>/g, '').length > 150 ? '...' : ''}
-                      </p>
+                      <div className="text-gray-600 text-sm leading-relaxed line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio }} />
                     )}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>

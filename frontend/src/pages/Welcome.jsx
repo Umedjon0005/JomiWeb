@@ -1,17 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "../hooks/useTranslation";
+import welcomeVideo from "../welcome.mp4";
 
 const Welcome = () => {
   const [showContent, setShowContent] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
-  const [videoSrc, setVideoSrc] = useState("/welcome.mp4");
-  const [videoError, setVideoError] = useState(false);
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const hasScrolled = useRef(false);
-  const { t } = useTranslation();
 
   useEffect(() => {
     // Show content after video loads
@@ -126,20 +123,11 @@ const Welcome = () => {
               {/* Video Background */}
               <motion.video
                 className="absolute inset-0 w-full h-full object-cover"
-                src={videoSrc}
+                src={welcomeVideo}
                 autoPlay
                 muted
                 loop
                 playsInline
-                preload="metadata"
-                onError={(e) => {
-                  if (!videoError) {
-                    // Hide video on error and show gradient background instead
-                    setVideoError(true);
-                    e.target.style.display = 'none';
-                    console.warn("Video failed to load, using gradient background");
-                  }
-                }}
                 initial={{ scale: 1 }}
                 animate={{ scale: isExiting ? 1.2 : 1 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
@@ -174,9 +162,9 @@ const Welcome = () => {
                     }}
                     transition={{ duration: 1, delay: 0.7 }}
                   >
-                    {t("welcome.titlePrefix", "Welcome to")}
+                    Welcome to
                     <span className="block text-gray-900 mt-2">
-                      {t("school.name", "Abdurahmoni Jomi Private School")}
+                      Abdurahmoni Jomi Private School
                     </span>
                   </motion.h1>
                   

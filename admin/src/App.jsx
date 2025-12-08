@@ -3,8 +3,6 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation,
-  useNavigate,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Login from "./pages/Login";
@@ -17,85 +15,21 @@ import PhotosManagement from "./pages/PhotosManagement";
 import TeachersManagement from "./pages/TeachersManagement";
 import AboutManagement from "./pages/AboutManagement";
 import StatsManagement from "./pages/StatsManagement";
-import ContactManagement from "./pages/ContactManagement";
 import Layout from "./components/Layout";
 import { getToken } from "./utils/auth";
-
-// Protected Route Component
-const ProtectedRoute = ({ children, setIsAuthenticated }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuth = () => {
-      const token = getToken();
-      if (!token) {
-        setIsAuthenticated(false);
-        navigate("/login", { replace: true, state: { from: location } });
-        return false;
-      }
-      setIsAuthenticated(true);
-      setLoading(false);
-      return true;
-    };
-
-    if (!checkAuth()) {
-      setLoading(false);
-      return;
-    }
-    
-    // Listen for storage changes (token removal)
-    const handleStorageChange = (e) => {
-      if (e.key === "admin_token" && !e.newValue) {
-        setIsAuthenticated(false);
-        navigate("/login", { replace: true });
-      }
-    };
-    
-    window.addEventListener("storage", handleStorageChange);
-    
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, [location, navigate, setIsAuthenticated]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0a0e1a]">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#3b82f6] border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  const token = getToken();
-  if (!token) {
-    return null;
-  }
-
-  return children;
-};
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = () => {
-      const token = getToken();
-      setIsAuthenticated(!!token);
-      setLoading(false);
-    };
-
-    checkAuth();
+    const token = getToken();
+    setIsAuthenticated(!!token);
+    setLoading(false);
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0a0e1a]">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#3b82f6] border-t-transparent"></div>
-      </div>
-    );
+    return <div className="loading">Loading...</div>;
   }
 
   return (
@@ -114,9 +48,11 @@ function App() {
         <Route
           path="/"
           element={
-            <ProtectedRoute setIsAuthenticated={setIsAuthenticated}>
+            isAuthenticated ? (
               <Layout setIsAuthenticated={setIsAuthenticated} />
-            </ProtectedRoute>
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         >
           <Route index element={<Navigate to="/dashboard" replace />} />
@@ -129,7 +65,6 @@ function App() {
           <Route path="teachers" element={<TeachersManagement />} />
           <Route path="about" element={<AboutManagement />} />
           <Route path="stats" element={<StatsManagement />} />
-          <Route path="contact" element={<ContactManagement />} />
         </Route>
       </Routes>
     </Router>

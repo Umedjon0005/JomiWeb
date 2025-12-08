@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const LanguageContext = createContext({
-  language: "en",
+  language: "tj",
   setLanguage: () => {},
 });
 

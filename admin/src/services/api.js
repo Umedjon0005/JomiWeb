@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAuthHeader, removeToken } from "../utils/auth";
+import { getAuthHeader } from "../utils/auth";
 
 // Use VITE_API_URL from environment or default to server IP
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://194.187.122.145:5000/api";
@@ -19,22 +19,6 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
-
-// Handle 401 errors - redirect to login if unauthorized
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Remove invalid token
-      removeToken();
-      // Redirect to login page
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
-    }
-    return Promise.reject(error);
-  }
-);
 
 // Auth API
 export const login = (credentials) => api.post("/auth/login", credentials);
@@ -296,11 +280,7 @@ export const getPhotos = () => api.get("/photos");
 export const createPhoto = (data) => {
   const formData = new FormData();
   formData.append("title", data.title);
-  formData.append("title_ru", data.title_ru || "");
-  formData.append("title_tj", data.title_tj || "");
   formData.append("description", data.description || "");
-  formData.append("description_ru", data.description_ru || "");
-  formData.append("description_tj", data.description_tj || "");
   formData.append("sort_order", data.sort_order || 0);
   if (data.image) {
     formData.append("image", data.image);
@@ -312,11 +292,7 @@ export const createPhoto = (data) => {
 export const updatePhoto = (id, data) => {
   const formData = new FormData();
   formData.append("title", data.title);
-  formData.append("title_ru", data.title_ru || "");
-  formData.append("title_tj", data.title_tj || "");
   formData.append("description", data.description || "");
-  formData.append("description_ru", data.description_ru || "");
-  formData.append("description_tj", data.description_tj || "");
   formData.append("sort_order", data.sort_order || 0);
   if (data.image) {
     formData.append("image", data.image);
@@ -326,11 +302,5 @@ export const updatePhoto = (id, data) => {
   });
 };
 export const deletePhoto = (id) => api.delete(`/photos/${id}`);
-
-// Contact Requests API
-export const getContactRequests = () => api.get("/contact");
-export const getContactRequestById = (id) => api.get(`/contact/${id}`);
-export const markContactAsRead = (id) => api.patch(`/contact/${id}/read`);
-export const deleteContactRequest = (id) => api.delete(`/contact/${id}`);
 
 export default api;

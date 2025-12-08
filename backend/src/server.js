@@ -9,9 +9,14 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
-  "http://194.187.122.145:5000",
-  "http://194.187.122.145:8834",
-  "http://194.187.122.145:8833",
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:8834",
+  "http://localhost:8833",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:3001",
+  "http://127.0.0.1:8834",
+  "http://127.0.0.1:8833",
   ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : []),
 ];
 
@@ -20,19 +25,10 @@ app.use(
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-      
-      // In production, allow all origins from the same server (for flexibility)
-      // In development, check against allowed list
-      if (process.env.NODE_ENV === "production") {
-        // Allow all origins in production (or be more specific if needed)
+      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== "production") {
         callback(null, true);
       } else {
-        // In development, check against allowed list
-        if (allowedOrigins.indexOf(origin) !== -1) {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
-        }
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
@@ -43,12 +39,8 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files - use the same upload directory as the upload middleware
-const uploadDir = process.env.UPLOAD_PATH 
-  ? process.env.UPLOAD_PATH 
-  : path.resolve(__dirname, "..", "uploads");
-app.use("/uploads", express.static(uploadDir));
-console.log(`Serving static files from: ${uploadDir}`);
+// Serve uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Swagger Documentation
 app.use(
@@ -72,28 +64,6 @@ app.use("/api/dashboard", require("./routes/dashboardRoutes"));
 app.use("/api/contact", require("./routes/contactRoutes"));
 app.use("/api/moments", require("./routes/momentsRoutes"));
 app.use("/api/photos", require("./routes/photosRoutes"));
-
-// Ensure contact_requests table exists on startup
-(async () => {
-  try {
-    const pool = require("./config/database");
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS contact_requests (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        subject VARCHAR(500),
-        message TEXT NOT NULL,
-        language VARCHAR(10) DEFAULT 'en',
-        read_status BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    console.log('✅ Contact requests table verified/created');
-  } catch (error) {
-    console.error('⚠️  Could not verify contact_requests table:', error.message);
-  }
-})();
 
 /**
  * @swagger
@@ -120,7 +90,7 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

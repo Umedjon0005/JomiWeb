@@ -3,7 +3,6 @@ import { createEvent, updateEvent } from '../services/api'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { SUPPORTED_LANGS } from '../constants/languages'
-import { formatDateForInput, normalizeLanguageFields, buildImageUrl } from '../utils/formHelpers'
 
 const EventModal = ({ event, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -24,20 +23,17 @@ const EventModal = ({ event, onClose, onSave }) => {
 
   useEffect(() => {
     if (event) {
-      // Normalize all language fields and format date
-      const normalized = normalizeLanguageFields(event, ['title', 'description', 'location']);
-      
       setFormData({
-        title: normalized.title || '',
-        title_ru: normalized.title_ru || '',
-        title_tj: normalized.title_tj || '',
-        description: normalized.description || '',
-        description_ru: normalized.description_ru || '',
-        description_tj: normalized.description_tj || '',
-        event_date: formatDateForInput(event.event_date),
-        location: normalized.location || '',
-        location_ru: normalized.location_ru || '',
-        location_tj: normalized.location_tj || '',
+        title: event.title || '',
+        title_ru: event.title_ru || '',
+        title_tj: event.title_tj || '',
+        description: event.description || '',
+        description_ru: event.description_ru || '',
+        description_tj: event.description_tj || '',
+        event_date: event.event_date || '',
+        location: event.location || '',
+        location_ru: event.location_ru || '',
+        location_tj: event.location_tj || '',
         image: null
       })
     } else {
@@ -203,32 +199,12 @@ const EventModal = ({ event, onClose, onSave }) => {
             <label className="block text-xs font-medium mb-2 text-[#9ca3af] uppercase tracking-wider">Image</label>
             <input
               type="file"
-              accept="image/*,.png,.jpg,.jpeg,.gif,.webp,.svg"
+              accept="image/*"
               onChange={handleImageChange}
               className="w-full px-4 py-2.5 bg-[#1f2937] border border-[#374151] rounded-md text-[#9ca3af] focus:outline-none focus:border-[#3b82f6] transition-colors"
             />
             {event?.image_url && !formData.image && (
-              <div className="mt-3">
-                <p className="text-xs text-[#6b7280] mb-2">Current Image:</p>
-                <img
-                  src={buildImageUrl(event.image_url)}
-                  alt="Current"
-                  className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </div>
-            )}
-            {formData.image && (
-              <div className="mt-3">
-                <p className="text-xs text-[#6b7280] mb-2">New Image Preview:</p>
-                <img
-                  src={URL.createObjectURL(formData.image)}
-                  alt="Preview"
-                  className="w-full max-w-md h-48 object-cover rounded-lg border-2 border-[#374151]"
-                />
-              </div>
+              <p className="mt-2 text-xs text-[#6b7280]">Current: {event.image_url}</p>
             )}
           </div>
           

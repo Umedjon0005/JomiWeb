@@ -3,13 +3,9 @@ const path = require('path');
 const fs = require('fs');
 
 // Ensure uploads directory exists
-// Resolve path: if UPLOAD_PATH is set, use it; otherwise use path relative to backend directory
-const uploadDir = process.env.UPLOAD_PATH 
-  ? process.env.UPLOAD_PATH 
-  : path.resolve(__dirname, "..", "uploads");
+const uploadDir = process.env.UPLOAD_PATH || './uploads';
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log(`Created uploads directory at: ${uploadDir}`);
 }
 
 const storage = multer.diskStorage({

@@ -15,14 +15,6 @@ import MomentsGallery from "../components/MomentsGallery";
 import { useLanguage } from "../context/LanguageContext";
 import { useTranslation } from "../hooks/useTranslation";
 
-// Helper function to strip HTML tags and get plain text
-const stripHtml = (html) => {
-  if (!html) return "";
-  const tmp = document.createElement("DIV");
-  tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || "";
-};
-
 const defaultHeroStats = [
   {
     label: "Global Delegations",
@@ -255,87 +247,48 @@ const Home = () => {
       teachersScrollTimeoutRef.current = setTimeout(() => {
         if (teachersScrollRef.current && teachersRes.data.length > 0) {
           const container = teachersScrollRef.current;
-          // Detect mobile devices
-          const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
-          
-          // Disable autoscroll on mobile for better performance
-          if (isMobile) {
-            teachersScrollCleanupRef.current = () => {};
-            return;
-          }
-
           let scrollPosition = 0;
-          let isPaused = false;
-          let animationFrameId = null;
-          const scrollSpeed = 0.5; // Slower for clearer, smoother scroll
-          
+          const scrollSpeed = 1.2;
+          let animationFrameId;
           const cardWidth = 320 + 32; // w-80 (320px) + gap-8 (32px)
           const singleSetWidth = teachersRes.data.slice(0, 4).length * cardWidth;
 
           const autoScroll = () => {
-            if (isPaused) return;
-            
             scrollPosition += scrollSpeed;
-            
+
             if (scrollPosition >= singleSetWidth) {
-              scrollPosition = 0;
+              scrollPosition = scrollPosition - singleSetWidth;
             }
 
-            container.scrollTo({
-              left: scrollPosition,
-              behavior: 'auto' // Use instant scroll for smoother performance
-            });
-
+            container.scrollLeft = scrollPosition;
             animationFrameId = requestAnimationFrame(autoScroll);
           };
 
           const handleMouseEnter = () => {
-            isPaused = true;
+            if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+            }
           };
 
           const handleMouseLeave = () => {
-            isPaused = false;
-            if (!animationFrameId) {
-              animationFrameId = requestAnimationFrame(autoScroll);
-            }
+            animationFrameId = requestAnimationFrame(autoScroll);
           };
 
-          const handleTouchStart = () => {
-            isPaused = true;
-          };
+          container.addEventListener("mouseenter", handleMouseEnter);
+          container.addEventListener("mouseleave", handleMouseLeave);
 
-          const handleTouchEnd = () => {
-            // Resume after a short delay
-            setTimeout(() => {
-              isPaused = false;
-              if (!animationFrameId) {
-                animationFrameId = requestAnimationFrame(autoScroll);
-              }
-            }, 2000);
-          };
-
-          container.addEventListener("mouseenter", handleMouseEnter, { passive: true });
-          container.addEventListener("mouseleave", handleMouseLeave, { passive: true });
-          container.addEventListener("touchstart", handleTouchStart, { passive: true });
-          container.addEventListener("touchend", handleTouchEnd, { passive: true });
-
-          // Start auto-scroll after a short delay
           animationFrameId = requestAnimationFrame(autoScroll);
 
           teachersScrollCleanupRef.current = () => {
-            isPaused = true;
             if (animationFrameId) {
               cancelAnimationFrame(animationFrameId);
-              animationFrameId = null;
             }
             container.removeEventListener("mouseenter", handleMouseEnter);
             container.removeEventListener("mouseleave", handleMouseLeave);
-            container.removeEventListener("touchstart", handleTouchStart);
-            container.removeEventListener("touchend", handleTouchEnd);
           };
         }
         teachersScrollTimeoutRef.current = null;
-      }, 1500);
+      }, 1000);
 
       setStats(statsRes.data);
       setOlympiads(olympiadsRes.data);
@@ -592,8 +545,7 @@ const Home = () => {
                           {item.title}
                         </h3>
                         <p className="text-gray-600 mb-6 leading-relaxed line-clamp-4">
-                          {stripHtml(item.content).substring(0, 200)}
-                          {stripHtml(item.content).length > 200 ? "..." : ""}
+                          {item.content.substring(0, 200)}...
                         </p>
                         <span className="text-gray-700 font-semibold">
                           {new Date(item.publish_date).toLocaleDateString()}
@@ -661,8 +613,7 @@ const Home = () => {
                       {event.title}
                     </h3>
                     <p className="text-gray-600 mb-4 line-clamp-3">
-                      {stripHtml(event.description).substring(0, 100)}
-                      {stripHtml(event.description).length > 100 ? "..." : ""}
+                      {event.description.substring(0, 100)}...
                     </p>
                     <div className="space-y-2 text-sm text-gray-500">
                       <div className="flex items-center gap-2">
@@ -844,13 +795,21 @@ const Home = () => {
             <div className="relative">
               <div 
                 ref={teachersScrollRef}
-                className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 optimized-scroll"
+                className="flex gap-8 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                }}
               >
                 {/* First set of teachers */}
                 {teachers.map((teacher, index) => (
-                  <div
+                  <motion.div
                     key={`teacher-${teacher.id}-1`}
-                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-shadow duration-200 border border-gray-100"
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
                   >
                     <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-900 shadow-lg">
                       {teacher.photo_url ? (
@@ -874,18 +833,19 @@ const Home = () => {
                       </p>
                     )}
                     {teacher.bio && (
-                      <p className="text-gray-600 text-sm line-clamp-3">
-                        {stripHtml(teacher.bio).substring(0, 100)}
-                        {stripHtml(teacher.bio).length > 100 ? '...' : ''}
-                      </p>
+                      <div className="text-gray-600 text-sm line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio.substring(0, 100) + '...' }} />
                     )}
-                  </div>
+                  </motion.div>
                 ))}
                 {/* Duplicate set for infinite scroll */}
                 {teachers.map((teacher, index) => (
-                  <div
+                  <motion.div
                     key={`teacher-${teacher.id}-2`}
-                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-shadow duration-200 border border-gray-100"
+                    className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
                   >
                     <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-900 shadow-lg">
                       {teacher.photo_url ? (
@@ -909,12 +869,9 @@ const Home = () => {
                       </p>
                     )}
                     {teacher.bio && (
-                      <p className="text-gray-600 text-sm line-clamp-3">
-                        {stripHtml(teacher.bio).substring(0, 100)}
-                        {stripHtml(teacher.bio).length > 100 ? '...' : ''}
-                      </p>
+                      <div className="text-gray-600 text-sm line-clamp-3" dangerouslySetInnerHTML={{ __html: teacher.bio.substring(0, 100) + '...' }} />
                     )}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
