@@ -8,7 +8,9 @@ RUN npm install
 COPY . .
 
 ARG VITE_API_URL=/api
+ARG VITE_MEDIA_URL
 ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_MEDIA_URL=${VITE_MEDIA_URL}
 RUN npm run build
 
 FROM nginx:alpine
