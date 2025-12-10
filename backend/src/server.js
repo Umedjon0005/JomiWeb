@@ -17,6 +17,10 @@ const allowedOrigins = [
   "http://127.0.0.1:3001",
   "http://127.0.0.1:8834",
   "http://127.0.0.1:8833",
+  "http://jomi.edu.tj",
+  "https://jomi.edu.tj",
+  "http://194.187.122.145",
+  "https://194.187.122.145",
   ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : []),
 ];
 
@@ -25,9 +29,24 @@ app.use(
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== "production") {
+      // Check if origin is in allowed list or matches allowed patterns
+      const isAllowed = allowedOrigins.some(allowed => {
+        // Exact match
+        if (origin === allowed) return true;
+        // Match with or without port
+        if (origin.startsWith(allowed + ':') || allowed.startsWith(origin)) return true;
+        // Match subdomains
+        if (allowed.includes('*')) {
+          const pattern = allowed.replace(/\*/g, '.*');
+          return new RegExp('^' + pattern + '$').test(origin);
+        }
+        return false;
+      });
+      
+      if (isAllowed || process.env.NODE_ENV !== "production") {
         callback(null, true);
       } else {
+        console.warn(`CORS blocked origin: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },

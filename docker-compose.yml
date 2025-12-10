@@ -29,11 +29,16 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: http://194.187.122.145:5000/api
-        VITE_MEDIA_URL: http://194.187.122.145:5000
+        VITE_API_URL: /api
+        VITE_MEDIA_URL: ""
     container_name: school_frontend
+    environment:
+      BACKEND_HOST: backend:5000
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/ssl:/etc/nginx/ssl:ro
     depends_on:
       - backend
     networks:
